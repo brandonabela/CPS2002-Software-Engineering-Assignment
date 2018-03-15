@@ -47,13 +47,13 @@ public class CalculatorTest
     @Test
     public void testDividePositiveValues()
     {
-        Assert.assertEquals(30, calculator.divide(2, 6));
+        Assert.assertEquals(3, calculator.divide(2, 6));
     }
 
     @Test
     public void divideZeroFuncTest()
     {
-        org.junit.Assert.assertEquals(0, calculator.divide(0,1));
+        org.junit.Assert.assertEquals(0, calculator.divide(0, 1));
     }
 
     @After
