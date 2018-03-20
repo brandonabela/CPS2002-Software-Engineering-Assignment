@@ -1,4 +1,4 @@
-package calculator;
+package part1_calculator;
 
 public class Calculator
 {
