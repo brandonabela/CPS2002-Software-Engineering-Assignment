@@ -65,9 +65,8 @@ public class Player
     }
 
 
-    StringBuilder getMoves(){
-        return moves;
+    String getMoves()
+    {
+        return moves.toString();
     }
-
-
 }
