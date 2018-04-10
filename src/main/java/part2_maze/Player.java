@@ -1,69 +1,127 @@
 package part2_maze;
+
+import javafx.geometry.Pos;
+
 import java.util.Random;
 import java.util.ArrayList;
 
 public class Player
 {
     private StringBuilder moves;
-    private Random rand;
-    private ArrayList<Position> positions;
+    private ArrayList<Position> movedPositions;
 
-    public Player(int dimension){
-        rand = new Random();
-        Position p = new Position(rand.nextInt(dimension),rand.nextInt(dimension));
-        positions = new ArrayList<Position>();
-        this.positions.add(p);
-        System.out.println("x value: "+p.getXCoordinate()+ " y value: "+p.getYCoordinate());
+    public Player(int dimension)
+    {
+        Random random = new Random();
+
         moves = new StringBuilder();
+        movedPositions = new ArrayList<Position>();
+
+        Position playerStartPosition = new Position(random.nextInt(dimension), random.nextInt(dimension));
+        this.movedPositions.add(playerStartPosition);
+
+        //System.out.println("Start Position (" + playerStartPosition.getXCoordinate() + ", " + playerStartPosition.getYCoordinate() + ")");
     }
 
+    boolean move(char moveDirection, Map map)
+    {
+        Position playerPosition = movedPositions.get(movedPositions.size() - 1);
 
-    public boolean move(char direction,int dimension){
-        Position p_current = positions.get(positions.size() - 1);
-        switch (direction){
-            case 'U': moves.insert(moves.length(),"Up");
-                      if(p_current.getXCoordinate() -1 < 0){
-                          System.out.println("Error in dimesions");
-                          return false;
-                      }else{
-                          Position np = new Position(p_current.getXCoordinate()-1,p_current.getYCoordinate());
-                          this.positions.add(np);
-                          return true;
-                      }
+        switch (moveDirection)
+        {
+            case 'W':
+            {
+                if (moves.length() > 1) {   moves.append(", ");  }
+                moves.append("Up");
 
-            case 'R': moves.insert(moves.length(),"Right");
-                      if(p_current.getYCoordinate() -1 < 0){
-                        System.out.println("Error in dimesions");
-                        return false;
-                    }else{
-                        Position np = new Position(p_current.getXCoordinate(),p_current.getYCoordinate()-1);
-                        this.positions.add(np);
-                        return true;
-                     }
-
-            case 'L': moves.insert(moves.length(),"Left");
-                    if(p_current.getYCoordinate() +1 >= dimension){
-                        System.out.println("Error in dimesions");
-                        return false;
-                    }else{
-                        Position np = new Position(p_current.getXCoordinate(),p_current.getYCoordinate()+1);
-                        this.positions.add(np);
-                        return true;
-                     }
-
-            case 'D': moves.insert(moves.length(),"Down");
-                    if(p_current.getXCoordinate() +1 >= dimension){
-                      System.out.println("Error in dimesions");
-                      return false;
-                    }else{
-                        Position np = new Position(p_current.getXCoordinate()+1,p_current.getYCoordinate());
-                        this.positions.add(np);
-                        return true;
+                if(0 <= playerPosition.getYCoordinate() - 1)
+                {
+                    this.movedPositions.add(new Position(playerPosition.getXCoordinate(), playerPosition.getYCoordinate() - 1));
+                    return true;
                 }
-            default: return false;
+                else
+                {
+                    System.out.println("Error in dimension. Player Position is" + playerPosition.toString());
+                    return false;
+                }
+            }
+
+            case 'A':
+            {
+                if (moves.length() > 1) {   moves.append(", ");  }
+                moves.append("Left");
+
+                if (0 <= playerPosition.getXCoordinate() - 1)
+                {
+                    this.movedPositions.add(new Position(playerPosition.getXCoordinate() - 1, playerPosition.getYCoordinate()));
+                    return true;
+                }
+                else
+                {
+                    System.out.println("Error in dimension. Player Position is" + playerPosition.toString());
+                    return false;
+                }
+            }
+
+            case 'S':
+            {
+                if (moves.length() > 1) {   moves.append(", ");  }
+                moves.append("Down");
+
+                if (playerPosition.getYCoordinate() + 1 < map.getMapDetail().length - 1)
+                {
+                    this.movedPositions.add(new Position(playerPosition.getXCoordinate(), playerPosition.getYCoordinate() + 1));
+                    return true;
+                }
+                else
+                {
+                    System.out.println("Error in dimension. Player Position is" + playerPosition.toString());
+                    return false;
+                }
+            }
+
+            case 'D':
+            {
+                if (moves.length() > 1) {   moves.append(", ");  }
+                moves.append("Right");
+
+                if(playerPosition.getXCoordinate() + 1 < map.getMapDetail()[0].length - 1)
+                {
+                    this.movedPositions.add(new Position(playerPosition.getXCoordinate() + 1, playerPosition.getYCoordinate()));
+                    return true;
+                }
+                else
+                {
+                    System.out.println("Error in dimension. Player Position is" + playerPosition.toString());
+                    return false;
+                }
+            }
+
+            default:
+            {
+                return false;
+            }
         }
     }
 
+    boolean isInMovedList(Position positionToCheck)
+    {
+        for (Position movedPosition : movedPositions)
+        {
+            if (movedPosition.getXCoordinate() == positionToCheck.getXCoordinate() &&
+                    movedPosition.getYCoordinate() == positionToCheck.getYCoordinate())
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    ArrayList<Position> getMovedPositions()
+    {
+        return movedPositions;
+    }
 
     String getMoves()
     {

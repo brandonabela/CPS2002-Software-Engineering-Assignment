@@ -2,19 +2,12 @@ package part2_maze;
 
 import java.util.Random;
 
-enum TileType
-{
-    GRASS,
-    ERROR
-}
-
-public class Map
+class Map
 {
     private int sizeOfMap;
     private TileType[][] mapDetail;
-    private Position mapStartPosition;
 
-    public boolean setMapSize(int xSize, int ySize)
+    boolean setMapSize(int xSize, int ySize)
     {
         if (xSize == ySize)
         {
@@ -31,9 +24,6 @@ public class Map
     {
         mapDetail = new TileType[sizeOfMap][sizeOfMap];
 
-        Random rand = new Random();
-        mapStartPosition = new Position(rand.nextInt(sizeOfMap) + 1, rand.nextInt(sizeOfMap) + 1);
-
         for (int i = 0; i < mapDetail.length; i ++)
         {
             for (int j = 0; j < mapDetail[0].length; j ++)
@@ -41,13 +31,25 @@ public class Map
                 mapDetail[i][j] = TileType.GRASS;
             }
         }
+
+        Random random = new Random();
+        Position randomPosition = new Position(0, 0);
+
+        do
+        {
+            randomPosition.setXCoordinate(randomPosition.getXCoordinate() + random.nextInt(3));
+            randomPosition.setYCoordinate(randomPosition.getYCoordinate() + random.nextInt(3));
+
+            mapDetail[randomPosition.getXCoordinate()][randomPosition.getYCoordinate()] = TileType.WATER;
+
+        } while (randomPosition.getXCoordinate() < mapDetail[0].length - 1 && randomPosition.getYCoordinate() < mapDetail.length - 1);
     }
 
-    public TileType getTileType(int xCoordinate, int yCoordinate)
+    TileType getTileType(int xCoordinate, int yCoordinate)
     {
-        if (mapDetail.length > yCoordinate && mapDetail[0].length > xCoordinate)
+        if (xCoordinate < mapDetail[0].length && yCoordinate < mapDetail.length)
         {
-            return mapDetail[yCoordinate][yCoordinate];
+            return mapDetail[yCoordinate][xCoordinate];
         }
         else
         {
@@ -55,18 +57,20 @@ public class Map
         }
     }
 
-    public String tileToString(TileType tileType)
+    TileType[][] getMapDetail()
+    {
+        return mapDetail;
+    }
+
+    String tileToString(TileType tileType)
     {
         switch (tileType)
         {
-            case GRASS :    return "grassTile";
-            case ERROR :    return "unknownTile";
-            default :       return "unknownTile";
+            case GRASS      :   return "grassTile";
+            case WATER      :   return "waterTile";
+            case TREASURE   :   return "treasureTile";
+            case ERROR      :   return "unknownTile";
+            default         :   return "unknownTile";
         }
-    }
-
-    public TileType[][] getMapDetail()
-    {
-        return mapDetail;
     }
 }
