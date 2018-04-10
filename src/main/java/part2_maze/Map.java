@@ -12,7 +12,6 @@ public class Map
 {
     private int sizeOfMap;
     private TileType[][] mapDetail;
-    private Position mapStartPosition;
 
     public boolean setMapSize(int xSize, int ySize)
     {
@@ -29,12 +28,6 @@ public class Map
 
     private void generate()
     {
-        mapDetail = new TileType[sizeOfMap][sizeOfMap];
-
-        Random rand = new Random();
-        mapStartPosition = new Position(rand.nextInt(sizeOfMap) + 1, rand.nextInt(sizeOfMap) + 1);
-
-        mapDetail[mapStartPosition.getYCoordinate()][mapStartPosition.getXCoordinate()] = TileType.GRASS;
     }
 
     public TileType getTileType(int xCoordinate, int yCoordinate)

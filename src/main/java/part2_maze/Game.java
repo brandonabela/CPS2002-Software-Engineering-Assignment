@@ -1,5 +1,6 @@
 package part2_maze;
 
+import java.util.Random;
 import java.util.Scanner;
 
 public class Game
@@ -12,24 +13,40 @@ public class Game
 
     private Game(int player_count, int table_dimension)
     {
+        players = new Player[player_count];
+        this.map = new Map();
         this.player_count = player_count;
         this.table_dimension = table_dimension;
     }
 
     private void startGame()
     {
-        if(player_count >= 2 && player_count <= 4 && table_dimension >= 5 && table_dimension <= 50)
-        {
-            System.out.println("Player Count: " + player_count + "\n" + "Map Dimension: " + table_dimension + "x" + table_dimension);
+        Random rand = new Random();
+        setNumPlayers();
+        boolean win = false;
+        Scanner sc = new Scanner(System.in);
+        int current_player_num = rand.nextInt(player_count);
+        while (!win){
+            System.out.println("Player: "+current_player_num+" Maker your move");
+            char mv = sc.next().charAt(0);
+            if(!players[current_player_num].move(mv,table_dimension)){
+                System.out.println("Invalid Move");
+            }
+            current_player_num+=1;
+            if(current_player_num > player_count)
+                current_player_num = 0;
         }
-        else if(player_count >= 5 && player_count <= 8 && table_dimension >= 8 && table_dimension <= 50)
-        {
-            System.out.println("Player Count: "+ player_count + "\n" + "Map Dimension: " + table_dimension + "x" + table_dimension);
-        }
-        else
-        {
-            System.out.println("Error Incorrect dimensions or player count");
-        }
+
+    }
+
+    private boolean setNumPlayers(){
+     if(player_count >= 2 && player_count <=8){
+         for (int i = 0; i < player_count; i++) {
+             players[i] = new Player(table_dimension);
+         }
+        return true;
+     }else
+        return false;
     }
 
     public static void main(String args[]){
