@@ -20,7 +20,7 @@ public class Player
         //System.out.println("Start Position " + playerStartPosition.toString());
     }
 
-    boolean move(char moveDirection, Map map)
+    public boolean move(char moveDirection, Map map)
     {
         Position playerPosition = movedPositions.get(movedPositions.size() - 1);
 
@@ -103,7 +103,7 @@ public class Player
         }
     }
 
-    boolean isInMovedList(Position positionToCheck)
+    public boolean isInMovedList(Position positionToCheck)
     {
         for (Position movedPosition : movedPositions)
         {
@@ -117,7 +117,7 @@ public class Player
         return false;
     }
 
-    void setPlayerStartPosition(Position startPosition)
+    public void setPlayerStartPosition(Position startPosition)
     {
         if (movedPositions.size() != 0)
         {

@@ -71,7 +71,6 @@ class Map
             case GRASS      :   return "grassTile";
             case WATER      :   return "waterTile";
             case TREASURE   :   return "treasureTile";
-            case ERROR      :   return "unknownTile";
             default         :   return "unknownTile";
         }
     }
