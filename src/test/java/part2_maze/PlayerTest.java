@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class PlayerTest
 {
@@ -92,6 +93,8 @@ public class PlayerTest
     @Test
     public void testIsInMovedList()
     {
+
+
         Assert.assertTrue(player.isInMovedList(player.getMovedPositions().get(0)));
     }
 
@@ -107,6 +110,45 @@ public class PlayerTest
         player.move('U', map);
 
         Assert.assertEquals("Up", player.getMoves());
+    }
+
+    @Test
+    public void testMoveDefault(){
+       assertEquals(false,player.move(' ',map));
+    }
+
+    @Test
+    public void testMoveUpIncorrect(){
+
+        player.setPlayerStartPosition(new Position(1, 0));
+        Assert.assertEquals(false, player.move('U', map));
+    }
+
+
+    @Test
+    public void testMoveleftIncorrect(){
+        player.setPlayerStartPosition(new Position(0, 1));
+        Assert.assertEquals(false, player.move('L', map));
+    }
+
+
+    @Test
+    public void testMoveRightIncorrect(){
+        player.setPlayerStartPosition(new Position(10, 0));
+        Assert.assertEquals(false, player.move('R', map));
+    }
+
+    @Test
+    public void testMoveDownIncorrect(){
+        player.setPlayerStartPosition(new Position(0, 10));
+        Assert.assertEquals(false, player.move('D', map));
+    }
+
+    @Test
+    public void testCheckMoveIncorrect(){
+        player.move('U', map);
+
+        assertFalse(player.isInMovedList(new Position(9,9)));
     }
 
     @After
