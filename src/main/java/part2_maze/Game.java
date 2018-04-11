@@ -43,7 +43,7 @@ public class Game
 
                 if(!players[playerTurn].move(moveDirection, map))
                 {
-                    System.out.println("Try again and make sure 'W' or 'A' or 'S' or 'D' are inputted and are within the map");
+                    System.out.println("Try again and make sure 'U' or 'L' or 'D' or 'R' are inputted and are within the map");
                 }
                 else
                 {
@@ -93,7 +93,7 @@ public class Game
                 "<style type=\"text/css\">\n" +
                 "    h2, p {margin: 0;}\n" +
                 "    i {font-size: 40px; color: white;}\n" +
-                "    table {height: 99vh; width: 99vw;}\n" +
+                "    table {height: 100vh; width: 100vw;}\n" +
                 "    .tg td{font-family:Arial, sans-serif; font-size:25px; border-style:solid; border-width:1px; border-color:black; text-align: center;}\n" +
                 "    .tg th{font-family:Arial, sans-serif; font-size:25px; border-style:solid; border-width:1px; border-color:black; text-align: center;}\n" +
                 "    .tg .tableHeading{font-family:\"Arial Black\", sans-serif !important; border-color:#ffffff; background-color: blue; color: white;}\n" +
@@ -187,7 +187,7 @@ public class Game
         System.out.println("Please enter the number of players");
         int amountOfPlayers = sc.nextInt();
 
-        System.out.println("Please enter the dimension size for the tables");
+        System.out.println("Please enter the dimension size of the map");
         int mapSize = sc.nextInt();
 
         Game game = new Game(amountOfPlayers, mapSize);

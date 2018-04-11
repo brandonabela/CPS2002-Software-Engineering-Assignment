@@ -34,6 +34,6 @@ public class Position
     @Override
     public String toString()
     {
-        return "(" + "xCoordinate=" + xCoordinate + ", yCoordinate=" + yCoordinate + ')';
+        return "(xCoordinate=" + xCoordinate + ", yCoordinate=" + yCoordinate + ")";
     }
 }

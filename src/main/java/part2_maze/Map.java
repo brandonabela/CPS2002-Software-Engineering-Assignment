@@ -35,14 +35,16 @@ class Map
         Random random = new Random();
         Position randomPosition = new Position(0, 0);
 
-        do
+        while (randomPosition.getXCoordinate() < mapDetail[0].length && randomPosition.getYCoordinate() < mapDetail.length)
         {
             randomPosition.setXCoordinate(randomPosition.getXCoordinate() + random.nextInt(3));
             randomPosition.setYCoordinate(randomPosition.getYCoordinate() + random.nextInt(3));
 
-            mapDetail[randomPosition.getXCoordinate()][randomPosition.getYCoordinate()] = TileType.WATER;
-
-        } while (randomPosition.getXCoordinate() < mapDetail[0].length - 1 && randomPosition.getYCoordinate() < mapDetail.length - 1);
+            if (randomPosition.getXCoordinate() < mapDetail[0].length - 1 && randomPosition.getYCoordinate() < mapDetail.length - 1)
+            {
+                mapDetail[randomPosition.getXCoordinate()][randomPosition.getYCoordinate()] = TileType.WATER;
+            }
+        }
     }
 
     TileType getTileType(int xCoordinate, int yCoordinate)
