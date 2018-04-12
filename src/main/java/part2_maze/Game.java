@@ -11,15 +11,16 @@ public class Game
     public static int playerTurn;
     private static Player[] players;
     public static String current_file_name;
-    private ArrayList<Integer> lost_players;
+    private ArrayList<Integer> lostPlayers;
 
     public void startGame()
     {
-        lost_players = new ArrayList<Integer>();
         boolean playerWon = false;
+
         Random rand = new Random();
         InputStream stdin = System.in;
         Scanner scanner = new Scanner(stdin);
+        lostPlayers = new ArrayList<Integer>();
 
         System.out.println("Please enter the number of players");
         int amountOfPlayers = scanner.nextInt();
@@ -30,6 +31,7 @@ public class Game
         map = new Map();
         map.setMapSize(mapSize, mapSize);
         map.generate();
+
         players = new Player[amountOfPlayers];
         playerTurn = rand.nextInt(players.length);
         setNumberOfPlayers(amountOfPlayers);
@@ -37,14 +39,18 @@ public class Game
         while (!playerWon)
         {
             boolean validInput = false;
+
             generateHTMLFiles();
-            if(lost_players.size() == amountOfPlayers){
+
+            if(lostPlayers.size() == amountOfPlayers)
+            {
                 System.out.println("All players are dead");
                 break;
             }
 
-            while(!checkifplayerisdead(playerTurn)){
-                playerTurn+=1;
+            while(!isPlayerDead (playerTurn))
+            {
+                playerTurn += 1;
                 if(playerTurn >= players.length)    {   playerTurn = 0; }
             }
 
@@ -65,23 +71,29 @@ public class Game
                 }
             } while (!validInput);
 
-            System.out.println("Successfully moved from " + players[playerTurn].getMovedPositions().get(players[playerTurn].getMovedPositions().size() - 2) +
-                                " to " + players[playerTurn].getMovedPositions().get(players[playerTurn].getMovedPositions().size() - 1));
+            System.out.println("Successfully moved from " +
+                                players[playerTurn].getMovedPositions().get(players[playerTurn].getMovedPositions().size() - 2) + " to " +
+                                players[playerTurn].getMovedPositions().get(players[playerTurn].getMovedPositions().size() - 1));
 
-            Position pos = players[playerTurn].getLastPos();
-            switch (map.getTileType(pos.getXCoordinate(),pos.getYCoordinate())){
-                case WATER:
-                    System.out.println("Player: "+playerTurn+" Has died");
-                    lost_players.add(playerTurn);
-                break;
+            Position lastPlayerPosition = players[playerTurn].getLastPos();
+
+            switch (map.getTileType(lastPlayerPosition.getXCoordinate(), lastPlayerPosition.getYCoordinate()))
+            {
+                case WATER :
+                {
+                    System.out.println("Player: " + playerTurn + " has died");
+                    lostPlayers.add(playerTurn);
+                    break;
+                }
+
                 case TREASURE:
-                    System.out.println("Player: "+playerTurn+" Has Won the Game!");
+                    System.out.println("Player: " + playerTurn + " has Won the Game!");
                     playerWon = true;
+                    break;
             }
 
             if(playerTurn ++ >= players.length - 1)    {   playerTurn = 0; }
         }
-
     }
 
     public static void generateHTMLFiles()
@@ -182,7 +194,7 @@ public class Game
             htmlString.append("    </tr>\n");
         }
 
-        htmlString.append("</table>\n </body>\n </html>");
+        htmlString.append("</table>\n</body>\n</html>");
 
         return htmlString.toString();
     }
@@ -203,13 +215,17 @@ public class Game
             return false;
         }
     }
-    public boolean checkifplayerisdead(int player){
-        for (int lost_player : lost_players) {
-            if (lost_player == player)
-                return false;
+
+    public boolean isPlayerDead(int player)
+    {
+        for (int aLostPlayer : lostPlayers)
+        {
+            if (aLostPlayer == player)  {   return false;   }
         }
+
         return true;
     }
+
     public static void main(String args[])
     {
         Game game = new Game();
