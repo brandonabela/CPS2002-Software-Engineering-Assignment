@@ -7,13 +7,13 @@ import java.util.Scanner;
 
 public class Game
 {
+    private static int playerTurn;
     private static Map map;
-    public static int playerTurn;
     private static Player[] players;
-    public static String current_file_name;
+    static String current_file_name;
     private ArrayList<Integer> lostPlayers;
 
-    public void startGame()
+    void startGame()
     {
         boolean playerWon = false;
 
@@ -96,11 +96,11 @@ public class Game
         }
     }
 
-    public static void generateHTMLFiles()
+    static void generateHTMLFiles()
     {
         try
         {
-            current_file_name = "map_player_"+String.format("%02d", playerTurn) + ".html";
+            current_file_name = "map_player_" + String.format("%02d", playerTurn) + ".html";
             File playerMapFile = new File("src/gameFiles/map_player_" + String.format("%02d", playerTurn) + ".html");
             playerMapFile.createNewFile();
 
@@ -116,7 +116,7 @@ public class Game
         }
     }
 
-    public static String htmlString()
+    static String htmlString()
     {
         StringBuilder htmlString = new StringBuilder();
 
@@ -142,11 +142,11 @@ public class Game
                 "\n" +
                 "<table class=\"tg\">");
 
-        htmlString.append("\n        <th class=\"tableHeading\" colspan=\"")
+        htmlString.append("\n    <th class=\"tableHeading\" colspan=\"")
                     .append(map.getMapDetail().length + 1)
                     .append("\"> <h2> Player ")
                     .append(String.format("%02d", playerTurn))
-                    .append("</h2> <p> Moves: ")
+                    .append(" </h2> <p> Moves: ")
                     .append(players[playerTurn].getMoves())
                     .append(" </p> </th>\n");
 
@@ -199,7 +199,7 @@ public class Game
         return htmlString.toString();
     }
 
-    public boolean setNumberOfPlayers(int amountOfPlayers)
+    boolean setNumberOfPlayers(int amountOfPlayers)
     {
         if(2 <= amountOfPlayers && amountOfPlayers <= 8)
         {
@@ -216,7 +216,7 @@ public class Game
         }
     }
 
-    public boolean isPlayerDead(int player)
+    private boolean isPlayerDead(int player)
     {
         for (int aLostPlayer : lostPlayers)
         {

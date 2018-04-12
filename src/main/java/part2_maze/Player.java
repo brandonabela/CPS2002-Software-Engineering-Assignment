@@ -3,12 +3,12 @@ package part2_maze;
 import java.util.Random;
 import java.util.ArrayList;
 
-public class Player
+class Player
 {
     private StringBuilder moves;
     private ArrayList<Position> movedPositions;
 
-    public Player(int mapSize)
+    Player(int mapSize)
     {
         Random random = new Random();
 
@@ -20,7 +20,7 @@ public class Player
         //System.out.println("Start Position " + playerStartPosition.toString());
     }
 
-    public boolean move(char moveDirection, Map map)
+    boolean move(char moveDirection, Map map)
     {
         Position playerPosition = movedPositions.get(movedPositions.size() - 1);
 
@@ -103,7 +103,7 @@ public class Player
         }
     }
 
-    public boolean isInMovedList(Position positionToCheck)
+    boolean isInMovedList(Position positionToCheck)
     {
         for (Position movedPosition : movedPositions)
         {
@@ -117,7 +117,7 @@ public class Player
         return false;
     }
 
-    public void setPlayerStartPosition(Position startPosition)
+    void setPlayerStartPosition(Position startPosition)
     {
         if (movedPositions.size() != 0)
         {
@@ -129,11 +129,11 @@ public class Player
         }
     }
 
-    public ArrayList<Position> getMovedPositions()
+    ArrayList<Position> getMovedPositions()
     {
         return movedPositions;
     }
-    public Position getLastPos(){
+    Position getLastPos(){
         return movedPositions.get(movedPositions.size()-1);
     }
     String getMoves()
