@@ -31,7 +31,7 @@ public class Player
                 if (moves.length() > 1) {   moves.append(", ");  }
                 moves.append("Up");
 
-                if(0 < playerPosition.getYCoordinate() - 1)
+                if(0 <= playerPosition.getYCoordinate() - 1)
                 {
                     this.movedPositions.add(new Position(playerPosition.getXCoordinate(), playerPosition.getYCoordinate() - 1));
                     return true;
@@ -48,7 +48,7 @@ public class Player
                 if (moves.length() > 1) {   moves.append(", ");  }
                 moves.append("Left");
 
-                if (0 < playerPosition.getXCoordinate() - 1)
+                if (0 <= playerPosition.getXCoordinate() - 1)
                 {
                     this.movedPositions.add(new Position(playerPosition.getXCoordinate() - 1, playerPosition.getYCoordinate()));
                     return true;
@@ -67,7 +67,7 @@ public class Player
 
                 System.out.println(map.getMapDetail().length);
 
-                if (playerPosition.getYCoordinate() + 1 <= map.getMapDetail().length)
+                if (playerPosition.getYCoordinate() + 1 < map.getMapDetail().length)
                 {
                     this.movedPositions.add(new Position(playerPosition.getXCoordinate(), playerPosition.getYCoordinate() + 1));
                     return true;
@@ -81,10 +81,10 @@ public class Player
 
             case 'R':
             {
-                if (moves.length() > 1) {   moves.append(", ");  }
+                if (moves.length() >= 1) {   moves.append(", ");  }
                 moves.append("Right");
 
-                if(playerPosition.getXCoordinate() + 1 <= map.getMapDetail()[0].length)
+                if(playerPosition.getXCoordinate() + 1 < map.getMapDetail()[0].length)
                 {
                     this.movedPositions.add(new Position(playerPosition.getXCoordinate() + 1, playerPosition.getYCoordinate()));
                     return true;
@@ -129,11 +129,13 @@ public class Player
         }
     }
 
-    ArrayList<Position> getMovedPositions()
+    public ArrayList<Position> getMovedPositions()
     {
         return movedPositions;
     }
-
+    public Position getLastPos(){
+        return movedPositions.get(movedPositions.size()-1);
+    }
     String getMoves()
     {
         return moves.toString();

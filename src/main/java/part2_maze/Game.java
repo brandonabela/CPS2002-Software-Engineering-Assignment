@@ -1,39 +1,52 @@
 package part2_maze;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
 public class Game
 {
     private static Map map;
-    private static int playerTurn;
+    public static int playerTurn;
     private static Player[] players;
+    public static String current_file_name;
+    private ArrayList<Integer> lost_players;
 
-    private Game(int amountOfPlayers, int mapSize)
+    public void startGame()
     {
+        lost_players = new ArrayList<Integer>();
+        boolean playerWon = false;
+        Random rand = new Random();
+        InputStream stdin = System.in;
+        Scanner scanner = new Scanner(stdin);
+
+        System.out.println("Please enter the number of players");
+        int amountOfPlayers = scanner.nextInt();
+
+        System.out.println("Please enter the dimension size of the map");
+        int mapSize = scanner.nextInt();
+
         map = new Map();
         map.setMapSize(mapSize, mapSize);
         map.generate();
-
         players = new Player[amountOfPlayers];
-        setNumberOfPlayers(amountOfPlayers);
-    }
-
-    private void startGame()
-    {
-        boolean playerWon = false;
-        Random rand = new Random();
-
-        Scanner scanner = new Scanner(System.in);
         playerTurn = rand.nextInt(players.length);
+        setNumberOfPlayers(amountOfPlayers);
 
         while (!playerWon)
         {
             boolean validInput = false;
+            generateHTMLFiles();
+            if(lost_players.size() == amountOfPlayers){
+                System.out.println("All players are dead");
+                break;
+            }
+
+            while(!checkifplayerisdead(playerTurn)){
+                playerTurn+=1;
+                if(playerTurn >= players.length)    {   playerTurn = 0; }
+            }
 
             System.out.println("Player " + playerTurn + ": Make your move");
 
@@ -47,6 +60,7 @@ public class Game
                 }
                 else
                 {
+                    generateHTMLFiles();
                     validInput = true;
                 }
             } while (!validInput);
@@ -54,17 +68,27 @@ public class Game
             System.out.println("Successfully moved from " + players[playerTurn].getMovedPositions().get(players[playerTurn].getMovedPositions().size() - 2) +
                                 " to " + players[playerTurn].getMovedPositions().get(players[playerTurn].getMovedPositions().size() - 1));
 
-            generateHTMLFiles();
+            Position pos = players[playerTurn].getLastPos();
+            switch (map.getTileType(pos.getXCoordinate(),pos.getYCoordinate())){
+                case WATER:
+                    System.out.println("Player: "+playerTurn+" Has died");
+                    lost_players.add(playerTurn);
+                break;
+                case TREASURE:
+                    System.out.println("Player: "+playerTurn+" Has Won the Game!");
+                    playerWon = true;
+            }
 
             if(playerTurn ++ >= players.length - 1)    {   playerTurn = 0; }
         }
 
     }
 
-    private static void generateHTMLFiles()
+    public static void generateHTMLFiles()
     {
         try
         {
+            current_file_name = "map_player_"+String.format("%02d", playerTurn) + ".html";
             File playerMapFile = new File("src/gameFiles/map_player_" + String.format("%02d", playerTurn) + ".html");
             playerMapFile.createNewFile();
 
@@ -80,7 +104,7 @@ public class Game
         }
     }
 
-    private static String htmlString()
+    public static String htmlString()
     {
         StringBuilder htmlString = new StringBuilder();
 
@@ -163,7 +187,7 @@ public class Game
         return htmlString.toString();
     }
 
-    private boolean setNumberOfPlayers(int amountOfPlayers)
+    public boolean setNumberOfPlayers(int amountOfPlayers)
     {
         if(2 <= amountOfPlayers && amountOfPlayers <= 8)
         {
@@ -179,18 +203,16 @@ public class Game
             return false;
         }
     }
-
+    public boolean checkifplayerisdead(int player){
+        for (int lost_player : lost_players) {
+            if (lost_player == player)
+                return false;
+        }
+        return true;
+    }
     public static void main(String args[])
     {
-        Scanner sc = new Scanner(System.in);
-
-        System.out.println("Please enter the number of players");
-        int amountOfPlayers = sc.nextInt();
-
-        System.out.println("Please enter the dimension size of the map");
-        int mapSize = sc.nextInt();
-
-        Game game = new Game(amountOfPlayers, mapSize);
+        Game game = new Game();
         game.startGame();
     }
 }
