@@ -153,13 +153,13 @@ public class PlayerTest
     @Test
     public void testLastPlayerX(){
         player.setPlayerStartPosition(new Position(1, 0));
-        assertEquals(1,player.getLastPos().getXCoordinate());
+        assertEquals(1,player.getLastPosition().getXCoordinate());
     }
 
     @Test
     public void testLastPlayerY(){
         player.setPlayerStartPosition(new Position(1, 0));
-        assertEquals(0,player.getLastPos().getYCoordinate());
+        assertEquals(0,player.getLastPosition().getYCoordinate());
     }
     @After
     public void cleanup()

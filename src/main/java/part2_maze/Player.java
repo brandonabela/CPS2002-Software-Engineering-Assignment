@@ -16,8 +16,6 @@ class Player
         movedPositions = new ArrayList<Position>();
 
         setPlayerStartPosition(new Position (random.nextInt(mapSize), random.nextInt(mapSize)));
-
-        //System.out.println("Start Position " + playerStartPosition.toString());
     }
 
     boolean move(char moveDirection, Map map)
@@ -133,9 +131,12 @@ class Player
     {
         return movedPositions;
     }
-    Position getLastPos(){
-        return movedPositions.get(movedPositions.size()-1);
+
+    Position getLastPosition()
+    {
+        return movedPositions.get(movedPositions.size() - 1);
     }
+
     String getMoves()
     {
         return moves.toString();

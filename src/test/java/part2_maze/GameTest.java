@@ -1,14 +1,9 @@
 package part2_maze;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.rules.ExpectedException;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.RandomAccessFile;
 
 import static org.junit.Assert.*;
 
@@ -21,6 +16,7 @@ public class GameTest
     {
         String data = "2\n5";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
+
         game = new Game();
     }
 
@@ -30,52 +26,72 @@ public class GameTest
     @Test
     public void testPlayerSet()
     {
-        assertEquals(2,game.amountOfPlayers);
+        assertEquals(2, Game.players.length);
     }
+
     @Test
     public void testMapSet()
     {
-        assertEquals(5,game.mapSize);
-    }
-
-
-
-    @Test
-    public void testPlayerSetIncorrect() throws PlayerToMapRatioException {
-        exception.expect(PlayerToMapRatioException.class);
-        game.CheckPlayersAndMap(9,5);
+        assertEquals(5, game.mapSizeInput);
     }
 
     @Test
-    public void testMapSetIncorrect() throws PlayerToMapRatioException {
-        exception.expect(PlayerToMapRatioException.class);
-        game.CheckPlayersAndMap(5,80);
+    public void testPlayerSetIncorrect() throws PlayerMapRatioException
+    {
+        exception.expect(PlayerMapRatioException.class);
+        game.checkPlayerMap(9,5);
     }
 
     @Test
-    public void testIncorrectPlayerCount(){
-        assertEquals(false,game.setNumberOfPlayers(10));
+    public void testMapSetIncorrect() throws PlayerMapRatioException
+    {
+        exception.expect(PlayerMapRatioException.class);
+        game.checkPlayerMap(5,80);
     }
 
     @Test
-    public void testCorrectPlayerCount(){
-        assertEquals(true,game.setNumberOfPlayers(2));
+    public void testPlayerMapRatioException()
+    {
+        try
+        {
+            game.checkPlayerMap(5,80);
+        }
+        catch (PlayerMapRatioException playerMapRatioException)
+        {
+            Assert.assertEquals("The map size of 80 x 80 is not allowed for 5 players", playerMapRatioException.getExceptionMessage());
+        }
     }
 
     @Test
-    public void testMoreThanFivePlayersC(){
+    public void testIncorrectPlayerCount()
+    {
+        assertFalse(game.setNumberOfPlayers(10));
+    }
+
+    @Test
+    public void testCorrectPlayerCount()
+    {
+        assertTrue(game.setNumberOfPlayers(2));
+    }
+
+    @Test
+    public void testMoreThanFivePlayersAmount()
+    {
         String data = "8\n20";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
         game = new Game();
-        assertEquals(8,game.amountOfPlayers);
+
+        assertEquals(8,game.amountOfPlayersInput);
     }
 
     @Test
-    public void testMoreThanFivePlayersM(){
+    public void testMoreThanFivePlayersMap()
+    {
         String data = "8\n20";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
         game = new Game();
-        assertEquals(20,game.mapSize);
+
+        assertEquals(20, game.mapSizeInput);
     }
 
     @Test
@@ -91,22 +107,17 @@ public class GameTest
     }
 
     @Test
-    public void testGenerateHTMLOpenFileName()
+    public void testPlayerDead()
     {
-        Game.generateHTMLFiles();
-        assertNotEquals("", Game.current_file_name);
+        game.lostPlayers.add(1);
+        assertTrue(game.isPlayerDead(1));
     }
 
     @Test
-    public void testPlayerDead(){
-        game.lostPlayers.add(1);
-        assertEquals(true,game.isPlayerDead(1));
+    public void testPlayerNotDead()
+    {
+       assertFalse(game.isPlayerDead(1));
     }
-
-   @Test
-   public void testPlayerNotDead(){
-       assertEquals(false,game.isPlayerDead(1));
-   }
 
     @After
     public void cleanup()
