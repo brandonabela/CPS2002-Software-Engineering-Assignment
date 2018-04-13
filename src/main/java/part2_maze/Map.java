@@ -45,6 +45,7 @@ class Map
                 mapDetail[randomPosition.getXCoordinate()][randomPosition.getYCoordinate()] = TileType.WATER;
             }
         }
+        mapDetail[random.nextInt(sizeOfMap)][random.nextInt(sizeOfMap)] = TileType.TREASURE;
     }
 
     TileType getTileType(int xCoordinate, int yCoordinate)

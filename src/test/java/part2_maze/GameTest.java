@@ -19,6 +19,8 @@ public class GameTest
     @Before
     public void setup()
     {
+        String data = "2\n5";
+        System.setIn(new ByteArrayInputStream(data.getBytes()));
         game = new Game();
     }
 
@@ -28,13 +30,52 @@ public class GameTest
     @Test
     public void testPlayerSet()
     {
-        assertTrue(game.setNumberOfPlayers(2));
+        assertEquals(2,game.amountOfPlayers);
+    }
+    @Test
+    public void testMapSet()
+    {
+        assertEquals(5,game.mapSize);
+    }
+
+
+
+    @Test
+    public void testPlayerSetIncorrect() throws PlayerToMapRatioException {
+        exception.expect(PlayerToMapRatioException.class);
+        game.CheckPlayersAndMap(9,5);
     }
 
     @Test
-    public void testPlayerSetIncorrect()
-    {
-        assertFalse(game.setNumberOfPlayers(9));
+    public void testMapSetIncorrect() throws PlayerToMapRatioException {
+        exception.expect(PlayerToMapRatioException.class);
+        game.CheckPlayersAndMap(5,80);
+    }
+
+    @Test
+    public void testIncorrectPlayerCount(){
+        assertEquals(false,game.setNumberOfPlayers(10));
+    }
+
+    @Test
+    public void testCorrectPlayerCount(){
+        assertEquals(true,game.setNumberOfPlayers(2));
+    }
+
+    @Test
+    public void testMoreThanFivePlayersC(){
+        String data = "8\n20";
+        System.setIn(new ByteArrayInputStream(data.getBytes()));
+        game = new Game();
+        assertEquals(8,game.amountOfPlayers);
+    }
+
+    @Test
+    public void testMoreThanFivePlayersM(){
+        String data = "8\n20";
+        System.setIn(new ByteArrayInputStream(data.getBytes()));
+        game = new Game();
+        assertEquals(20,game.mapSize);
     }
 
     @Test
@@ -57,21 +98,15 @@ public class GameTest
     }
 
     @Test
-    public void testGenerateHTMLOpenFileIncorrect() throws IOException
-    {
-        Game.generateHTMLFiles();
-        final RandomAccessFile raFile = new RandomAccessFile("src/gameFiles/" + Game.current_file_name,"rw");
-        raFile.getChannel().lock();
-        exception.expect(IOException.class);
+    public void testPlayerDead(){
+        game.lostPlayers.add(1);
+        assertEquals(true,game.isPlayerDead(1));
     }
 
-    @Test
-    public void testStartGame()
-    {
-        String data = "2\n5";
-        System.setIn(new ByteArrayInputStream(data.getBytes()));
-        game.startGame();
-    }
+   @Test
+   public void testPlayerNotDead(){
+       assertEquals(false,game.isPlayerDead(1));
+   }
 
     @After
     public void cleanup()

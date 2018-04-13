@@ -150,7 +150,17 @@ public class PlayerTest
 
         assertFalse(player.isInMovedList(new Position(9,9)));
     }
+    @Test
+    public void testLastPlayerX(){
+        player.setPlayerStartPosition(new Position(1, 0));
+        assertEquals(1,player.getLastPos().getXCoordinate());
+    }
 
+    @Test
+    public void testLastPlayerY(){
+        player.setPlayerStartPosition(new Position(1, 0));
+        assertEquals(0,player.getLastPos().getYCoordinate());
+    }
     @After
     public void cleanup()
     {

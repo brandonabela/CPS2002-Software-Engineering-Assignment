@@ -5,34 +5,60 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
+import static javafx.application.Platform.exit;
+
 public class Game
 {
     private static int playerTurn;
     private static Map map;
     private static Player[] players;
     static String current_file_name;
-    private ArrayList<Integer> lostPlayers;
+    public int amountOfPlayers;
+    public int mapSize;
+    public ArrayList<Integer> lostPlayers;
+
+     Game(){
+        Scanner scanner = new Scanner(System.in);
+        lostPlayers = new ArrayList<Integer>();
+        map = new Map();
+
+        System.out.println("Please enter the number of players");
+        amountOfPlayers = scanner.nextInt();
+
+        System.out.println("Please enter the dimension size of the map");
+        mapSize = scanner.nextInt();
+
+        players = new Player[amountOfPlayers];
+
+        try{
+            CheckPlayersAndMap(amountOfPlayers,mapSize);
+
+        }catch (PlayerToMapRatioException exception){
+            System.exit(0);
+        }
+    }
+
+     void CheckPlayersAndMap(int playerC, int mapSz) throws PlayerToMapRatioException {
+        if(playerC >=2 && playerC <=4 && mapSz >= 5 && mapSz <= 50)
+        {
+            System.out.println("Player Count: "+playerC+"\n"+"Map Dimension: "+mapSz+"x"+mapSz);
+        }else if(playerC >=5 && playerC <=8 && mapSz >= 8 && mapSz <= 50){
+            System.out.println("Player Count: "+playerC+"\n"+"Map Dimension: "+mapSz+"x"+mapSz);
+        }else{
+            throw new PlayerToMapRatioException();
+        }
+        map.setMapSize(mapSz, mapSz);
+        map.generate();
+        setNumberOfPlayers(playerC);
+    }
 
     void startGame()
     {
         boolean playerWon = false;
-
         Random rand = new Random();
-        InputStream stdin = System.in;
-        Scanner scanner = new Scanner(stdin);
-        lostPlayers = new ArrayList<Integer>();
 
-        System.out.println("Please enter the number of players");
-        int amountOfPlayers = scanner.nextInt();
+        Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Please enter the dimension size of the map");
-        int mapSize = scanner.nextInt();
-
-        map = new Map();
-        map.setMapSize(mapSize, mapSize);
-        map.generate();
-
-        players = new Player[amountOfPlayers];
         playerTurn = rand.nextInt(players.length);
         setNumberOfPlayers(amountOfPlayers);
 
@@ -48,7 +74,7 @@ public class Game
                 break;
             }
 
-            while(!isPlayerDead (playerTurn))
+            while(isPlayerDead (playerTurn))
             {
                 playerTurn += 1;
                 if(playerTurn >= players.length)    {   playerTurn = 0; }
@@ -216,14 +242,14 @@ public class Game
         }
     }
 
-    private boolean isPlayerDead(int player)
+     boolean isPlayerDead(int player)
     {
         for (int aLostPlayer : lostPlayers)
         {
-            if (aLostPlayer == player)  {   return false;   }
+            if (aLostPlayer == player)  {   return true;   }
         }
 
-        return true;
+        return false;
     }
 
     public static void main(String args[])
