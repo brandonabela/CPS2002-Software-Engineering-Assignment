@@ -9,12 +9,13 @@ import static javafx.application.Platform.exit;
 
 public class Game
 {
-    private static int playerTurn;
-    private static Map map;
-    private static Player[] players;
+    public static int playerTurn;
+    public static Map map;
+    public static Player[] players;
     static String current_file_name;
     public int amountOfPlayers;
     public int mapSize;
+    public boolean playerWon;
     public ArrayList<Integer> lostPlayers;
 
      Game(){
@@ -29,14 +30,23 @@ public class Game
         mapSize = scanner.nextInt();
 
         players = new Player[amountOfPlayers];
+        boolean validInput = false;
+        while (!validInput){
+            try{
+                CheckPlayersAndMap(amountOfPlayers,mapSize);
+                validInput = true;
+            }catch (PlayerToMapRatioException ignored){
+                System.out.println("Please enter the number of players");
+                amountOfPlayers = scanner.nextInt();
 
-        try{
-            CheckPlayersAndMap(amountOfPlayers,mapSize);
+                System.out.println("Please enter the dimension size of the map");
+                mapSize = scanner.nextInt();
+            }
 
-        }catch (PlayerToMapRatioException exception){
-            System.exit(0);
         }
-    }
+
+         playerWon = false;
+     }
 
      void CheckPlayersAndMap(int playerC, int mapSz) throws PlayerToMapRatioException {
         if(playerC >=2 && playerC <=4 && mapSz >= 5 && mapSz <= 50)
@@ -52,76 +62,86 @@ public class Game
         setNumberOfPlayers(playerC);
     }
 
-    void startGame()
+    boolean CheckIfAllPlayerAreDead(){
+        if(lostPlayers.size() == amountOfPlayers)
+        {
+            System.out.println("All players are dead");
+            return true;
+        }
+        return false;
+    }
+
+    void SwitchToAlivePlayer(){
+        while(isPlayerDead (playerTurn))
+        {
+            playerTurn += 1;
+            if(playerTurn >= players.length)    {   playerTurn = 0; }
+        }
+    }
+     void startGame()
     {
-        boolean playerWon = false;
         Random rand = new Random();
-
-        Scanner scanner = new Scanner(System.in);
-
         playerTurn = rand.nextInt(players.length);
-        setNumberOfPlayers(amountOfPlayers);
+
 
         while (!playerWon)
         {
-            boolean validInput = false;
-
             generateHTMLFiles();
 
-            if(lostPlayers.size() == amountOfPlayers)
-            {
-                System.out.println("All players are dead");
+            if(CheckIfAllPlayerAreDead())
                 break;
-            }
+            SwitchToAlivePlayer();
 
-            while(isPlayerDead (playerTurn))
-            {
-                playerTurn += 1;
-                if(playerTurn >= players.length)    {   playerTurn = 0; }
-            }
+            TryToMove();
 
-            System.out.println("Player " + playerTurn + ": Make your move");
-
-            do
-            {
-                char moveDirection = scanner.next().charAt(0);
-
-                if(!players[playerTurn].move(moveDirection, map))
-                {
-                    System.out.println("Try again and make sure 'U' or 'L' or 'D' or 'R' are inputted and are within the map");
-                }
-                else
-                {
-                    generateHTMLFiles();
-                    validInput = true;
-                }
-            } while (!validInput);
-
-            System.out.println("Successfully moved from " +
-                                players[playerTurn].getMovedPositions().get(players[playerTurn].getMovedPositions().size() - 2) + " to " +
-                                players[playerTurn].getMovedPositions().get(players[playerTurn].getMovedPositions().size() - 1));
-
-            Position lastPlayerPosition = players[playerTurn].getLastPos();
-
-            switch (map.getTileType(lastPlayerPosition.getXCoordinate(), lastPlayerPosition.getYCoordinate()))
-            {
-                case WATER :
-                {
-                    System.out.println("Player: " + playerTurn + " has died");
-                    lostPlayers.add(playerTurn);
-                    break;
-                }
-
-                case TREASURE:
-                    System.out.println("Player: " + playerTurn + " has Won the Game!");
-                    playerWon = true;
-                    break;
-            }
-
+            CheckMovedTile();
             if(playerTurn ++ >= players.length - 1)    {   playerTurn = 0; }
         }
     }
+    void TryToMove(){
+        Scanner scanner = new Scanner(System.in);
+        boolean validInput = false;
+        System.out.println("Player " + playerTurn + ": Make your move");
+        do
+        {
+            char moveDirection = scanner.next().charAt(0);
 
+            if(!players[playerTurn].move(moveDirection, map))
+            {
+                System.out.println("Try again and make sure 'U' or 'L' or 'D' or 'R' are inputted and are within the map");
+            }
+            else
+            {
+                generateHTMLFiles();
+                validInput = true;
+            }
+        } while (!validInput);
+        System.out.println("Successfully moved from " +
+                players[playerTurn].getMovedPositions().get(players[playerTurn].getMovedPositions().size() - 2) + " to " +
+                players[playerTurn].getMovedPositions().get(players[playerTurn].getMovedPositions().size() - 1));
+
+
+    }
+    void CheckMovedTile(){
+        Position lastPlayerPosition = players[playerTurn].getLastPos();
+
+        switch (map.getTileType(lastPlayerPosition.getXCoordinate(), lastPlayerPosition.getYCoordinate()))
+        {
+            case WATER :
+            {
+                System.out.println("Player: " + playerTurn + " has died");
+                lostPlayers.add(playerTurn);
+                break;
+            }
+
+            case TREASURE:
+                System.out.println("Player: " + playerTurn + " has Won the Game!");
+                playerWon = true;
+                break;
+        }
+
+
+    }
     static void generateHTMLFiles()
     {
         try

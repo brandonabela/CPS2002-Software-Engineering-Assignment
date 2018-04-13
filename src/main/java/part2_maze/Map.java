@@ -75,4 +75,8 @@ class Map
             default         :   return "unknownTile";
         }
     }
+
+    void changeTileType(int x,int y,TileType tileType){
+        mapDetail[x][y] = tileType;
+    }
 }
