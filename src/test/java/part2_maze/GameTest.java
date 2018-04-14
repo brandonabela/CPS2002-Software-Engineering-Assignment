@@ -2,9 +2,7 @@ package part2_maze;
 
 import org.junit.*;
 import org.junit.rules.ExpectedException;
-
 import java.io.ByteArrayInputStream;
-
 import static org.junit.Assert.*;
 
 public class GameTest
@@ -32,15 +30,20 @@ public class GameTest
     @Test
     public void testMapSet()
     {
-        assertEquals(5, game.mapSize);
+        assertEquals(5, Game.map.getMapDetail().length);
     }
+
     @Test
-    public void testPlayerDoesNotStartonWaterorTreasure(){
+    public void testPlayerDoesNotStartonWaterorTreasure()
+    {
         Game.players[0].setPlayerStartPosition(new Position(0,0));
-        Game.map.changeTileType(0,0,TileType.WATER);
-        game.setNumberOfPlayers(2);
+        Game.map.changeTileType(new Position(0, 1), TileType.WATER);
+        game.setNumberOfPlayers(2, 5);
+
         if(Game.players[0].getLastPosition().getXCoordinate() == 0 && Game.players[0].getLastPosition().getYCoordinate() == 0)
+        {
             fail();
+        }
     }
 
     @Test
@@ -51,11 +54,11 @@ public class GameTest
     }
 
     @Test
-    public void testExceptionCatch(){
+    public void testExceptionCatch()
+    {
         String data = "10\n5\n2\n5";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
         game = new Game();
-
     }
 
     @Test
@@ -74,20 +77,20 @@ public class GameTest
         }
         catch (PlayerMapRatioException playerMapRatioException)
         {
-            Assert.assertEquals("The map size of 80 x 80 is not allowed for 5 players", playerMapRatioException.getExceptionMessage());
+            Assert.assertEquals("The map size of 80 x 80 is not allowed for 5 players", playerMapRatioException.getMessage());
         }
     }
 
     @Test
     public void testIncorrectPlayerCount()
     {
-        assertFalse(game.setNumberOfPlayers(10));
+        assertFalse(game.setNumberOfPlayers(10, 5));
     }
 
     @Test
     public void testCorrectPlayerCount()
     {
-        assertTrue(game.setNumberOfPlayers(2));
+        assertTrue(game.setNumberOfPlayers(2, 5));
     }
 
     @Test
@@ -97,7 +100,7 @@ public class GameTest
         System.setIn(new ByteArrayInputStream(data.getBytes()));
         game = new Game();
 
-        assertEquals(8,game.amountOfPlayersInput);
+        assertEquals(8, Game.players.length);
     }
 
     @Test
@@ -107,7 +110,7 @@ public class GameTest
         System.setIn(new ByteArrayInputStream(data.getBytes()));
         game = new Game();
 
-        assertEquals(20, game.mapSizeInput);
+        assertEquals(20, Game.map.getMapDetail().length);
     }
 
     @Test
@@ -130,103 +133,117 @@ public class GameTest
     }
 
     @Test
-    public void testCurrentPlayerAfterPlayerDies(){
+    public void testCurrentPlayerAfterPlayerDies()
+    {
         Game.playerTurn = 1;
         game.lostPlayers.add(1);
-        game.SwitchToAlivePlayer();
-        assertEquals(0,Game.playerTurn);
+        game.switchToAlivePlayer();
+        assertEquals(0, Game.playerTurn);
     }
 
    @Test
-   public void testPlayerNotDead(){
-       assertEquals(false,game.isPlayerDead(1));
+   public void testPlayerNotDead()
+   {
+       assertFalse(game.isPlayerDead(1));
    }
+
    @Test
-   public void testAllDeadPlayer(){
+   public void testAllDeadPlayer()
+   {
        game.lostPlayers.add(0);
        game.lostPlayers.add(1);
-       assertEquals(true,game.CheckIfAllPlayerAreDead());
+       assertTrue(game.allPlayersAreDead());
    }
 
     @Test
-    public void testOneDeadPlayer(){
+    public void testOneDeadPlayer()
+    {
         game.lostPlayers.add(1);
-        assertEquals(false,game.CheckIfAllPlayerAreDead());
+        assertFalse(game.allPlayersAreDead());
     }
+
     @Test
-    public void testPlayerSwitch(){
+    public void testPlayerSwitch()
+    {
         game.lostPlayers.add(1);
-        game.SwitchToAlivePlayer();
+        game.switchToAlivePlayer();
         assertEquals(0,Game.playerTurn);
     }
 
     @Test
-    public void TestCorrectInputForMove(){
+    public void TestCorrectInputForMove()
+    {
         Game.playerTurn = 0;
         Game.players[0].setPlayerStartPosition(new Position(0,0));
         String data = "R";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
-        game.TryToMove();
+        game.tryToMove();
         assertEquals(0,Game.players[0].getLastPosition().getYCoordinate());
     }
 
     @Test
-    public void testIncorrectMoveThenCorrect(){
+    public void testIncorrectMoveThenCorrect()
+    {
         Game.playerTurn = 0;
         Game.players[0].setPlayerStartPosition(new Position(0,0));
         String data = "U\nR";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
-        game.TryToMove();
+        game.tryToMove();
         assertEquals(1,Game.players[0].getLastPosition().getXCoordinate());
     }
 
     @Test
-    public void testPlayerMovingIntoWaterTile(){
+    public void testPlayerMovingIntoWaterTile()
+    {
         Game.playerTurn = 0;
         Game.players[0].setPlayerStartPosition(new Position(0,0));
         String data = "R";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
-        Game.map.changeTileType(0,1,TileType.WATER);
-        game.TryToMove();
+        Game.map.changeTileType(new Position(0, 1), TileType.WATER);
+        game.tryToMove();
         game.CheckMovedTile();
-        assertEquals(true,game.isPlayerDead(0));
+        assertTrue(game.isPlayerDead(0));
     }
 
     @Test
-    public void testPlayerMovingIntoTreasure(){
+    public void testPlayerMovingIntoTreasure()
+    {
         Game.playerTurn = 0;
         Game.players[0].setPlayerStartPosition(new Position(0,0));
         String data = "R";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
-        Game.map.changeTileType(0,1,TileType.TREASURE);
-        game.TryToMove();
+        Game.map.changeTileType(new Position(0, 1), TileType.TREASURE);
+        game.tryToMove();
         game.CheckMovedTile();
-        assertEquals(true,game.playerWon);
+        assertTrue(game.playerWon);
     }
+
     @Test
-    public void teststartGameWin(){
+    public void testStartGameWin()
+    {
         game.playerWon = true;
         game.startGame();
-
     }
 
     @Test
-    public void teststartGameAllDeadPlayers(){
+    public void testStartGameAllDeadPlayers()
+    {
         game.lostPlayers.add(0);
         game.lostPlayers.add(1);
         game.startGame();
-        assertEquals(false,game.playerWon);
+        assertFalse(game.playerWon);
     }
 
     @Test
-    public void teststartGamePlayerWins(){
+    public void testStartGamePlayerWins()
+    {
         game.lostPlayers.add(1);
         Game.players[0].setPlayerStartPosition(new Position(0,0));
         String data = "R";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
-        Game.map.changeTileType(0,1,TileType.TREASURE);
+        Game.map.changeTileType(new Position(0, 1), TileType.TREASURE);
         game.startGame();
-        assertEquals(true,game.playerWon);
+        assertTrue(game.playerWon);
     }
 
     @After
