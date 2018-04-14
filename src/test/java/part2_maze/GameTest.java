@@ -138,7 +138,7 @@ public class GameTest
         Game.playerTurn = 1;
         game.lostPlayers.add(1);
         game.switchToAlivePlayer();
-        assertEquals(0,Game.playerTurn);
+        assertEquals(0, Game.playerTurn);
     }
 
    @Test

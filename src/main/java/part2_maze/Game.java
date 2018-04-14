@@ -80,7 +80,7 @@ public class Game
     {
         while(isPlayerDead (playerTurn))
         {
-            if(playerTurn++ >= players.length)    {   playerTurn = 0; }
+            if((playerTurn += 1) >= players.length)    {   playerTurn = 0; }
         }
     }
 
@@ -98,7 +98,7 @@ public class Game
             tryToMove();
             CheckMovedTile();
 
-            if(playerTurn ++ >= players.length - 1)    {   playerTurn = 0; }
+            if((playerTurn += 1) >= players.length - 1)    {   playerTurn = 0; }
         }
     }
 
@@ -252,7 +252,7 @@ public class Game
             {
                 players[i] = new Player(mapSize);
 
-                while(!map.isTileBeingUsed(players[i].getLastPosition()))
+                while(!map.isTileNotUsed(players[i].getLastPosition()))
                 {
                     players[i].setPlayerStartPosition(new Position(rand.nextInt(mapSize), rand.nextInt(mapSize)));
                 }

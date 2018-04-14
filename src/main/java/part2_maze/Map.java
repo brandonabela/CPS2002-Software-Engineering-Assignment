@@ -60,7 +60,7 @@ class Map
         }
     }
 
-    boolean isTileBeingUsed(Position positionToCheck)
+    boolean isTileNotUsed(Position positionToCheck)
     {
         return tileToString(mapDetail[positionToCheck.getXCoordinate()][positionToCheck.getYCoordinate()]).equals("grassTile");
     }
