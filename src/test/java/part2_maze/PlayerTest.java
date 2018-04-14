@@ -35,7 +35,7 @@ public class PlayerTest
     {
         player.setPlayerStartPosition(new Position(10, 10));
 
-        Assert.assertEquals(true, player.move('U', map));
+        Assert.assertTrue(player.move('U', map));
     }
 
     @Test
@@ -52,7 +52,7 @@ public class PlayerTest
     {
         player.setPlayerStartPosition(new Position(0, 0));
 
-        Assert.assertEquals(true, player.move('D', map));
+        Assert.assertTrue(player.move('D', map));
     }
 
     @Test
@@ -69,7 +69,7 @@ public class PlayerTest
     {
         player.setPlayerStartPosition(new Position(10, 10));
 
-        Assert.assertEquals(true, player.move('L', map));
+        Assert.assertTrue(player.move('L', map));
     }
 
     @Test
@@ -81,20 +81,17 @@ public class PlayerTest
         Assert.assertEquals(3, player.getMovedPositions().get(1).getXCoordinate());
     }
 
-
     @Test
     public void testMoveRightException()
     {
         player.setPlayerStartPosition(new Position(2, 2));
 
-        Assert.assertEquals(true, player.move('R', map));
+        Assert.assertTrue(player.move('R', map));
     }
 
     @Test
     public void testIsInMovedList()
     {
-
-
         Assert.assertTrue(player.isInMovedList(player.getMovedPositions().get(0)));
     }
 
@@ -113,54 +110,62 @@ public class PlayerTest
     }
 
     @Test
-    public void testMoveDefault(){
-       assertEquals(false,player.move(' ',map));
+    public void testMoveDefault()
+    {
+        assertFalse(player.move(' ', map));
     }
 
     @Test
-    public void testMoveUpIncorrect(){
-
+    public void testMoveUpIncorrect()
+    {
         player.setPlayerStartPosition(new Position(1, 0));
-        Assert.assertEquals(false, player.move('U', map));
+        Assert.assertFalse(player.move('U', map));
     }
 
 
     @Test
-    public void testMoveleftIncorrect(){
+    public void testMoveLeftIncorrect()
+    {
         player.setPlayerStartPosition(new Position(0, 1));
-        Assert.assertEquals(false, player.move('L', map));
+        Assert.assertFalse(player.move('L', map));
     }
 
-
     @Test
-    public void testMoveRightIncorrect(){
+    public void testMoveRightIncorrect()
+    {
         player.setPlayerStartPosition(new Position(10, 0));
-        Assert.assertEquals(false, player.move('R', map));
+        Assert.assertFalse(player.move('R', map));
     }
 
     @Test
-    public void testMoveDownIncorrect(){
+    public void testMoveDownIncorrect()
+    {
         player.setPlayerStartPosition(new Position(0, 10));
-        Assert.assertEquals(false, player.move('D', map));
+        Assert.assertFalse(player.move('D', map));
     }
 
     @Test
-    public void testCheckMoveIncorrect(){
+    public void testCheckMoveIncorrect()
+    {
         player.move('U', map);
 
         assertFalse(player.isInMovedList(new Position(9,9)));
     }
+
     @Test
-    public void testLastPlayerX(){
+    public void testLastPlayerX()
+    {
         player.setPlayerStartPosition(new Position(1, 0));
-        assertEquals(1,player.getLastPosition().getXCoordinate());
+        assertEquals(1, player.getLastPosition().getXCoordinate());
     }
 
     @Test
-    public void testLastPlayerY(){
+    public void testLastPlayerY()
+    {
         player.setPlayerStartPosition(new Position(1, 0));
-        assertEquals(0,player.getLastPosition().getYCoordinate());
+        assertEquals(0, player.getLastPosition().getYCoordinate());
     }
+
     @After
     public void cleanup()
     {
