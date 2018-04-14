@@ -7,6 +7,9 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+
 import static org.junit.Assert.*;
 
 public class GameTest
@@ -50,7 +53,6 @@ public class GameTest
         game = new Game();
 
     }
-
     @Test
     public void testPlayerSetIncorrect() throws PlayerToMapRatioException {
         exception.expect(PlayerToMapRatioException.class);
