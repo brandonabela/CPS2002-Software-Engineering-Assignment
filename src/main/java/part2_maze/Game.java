@@ -9,14 +9,14 @@ import static javafx.application.Platform.exit;
 
 public class Game
 {
-    public static int playerTurn;
-    public static Map map;
-    public static Player[] players;
-    static String current_file_name;
-    public int amountOfPlayers;
-    public int mapSize;
-    public boolean playerWon;
-    public ArrayList<Integer> lostPlayers;
+     static int playerTurn;
+     static Map map;
+     static Player[] players;
+     static String current_file_name;
+     int amountOfPlayers;
+     int mapSize;
+     boolean playerWon;
+     ArrayList<Integer> lostPlayers;
 
      Game(){
         Scanner scanner = new Scanner(System.in);
