@@ -5,6 +5,16 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
+/**
+ * Main class to run game
+ *
+ * All class variables are package bound to be able to
+ * execute different tests.
+ *
+ * Total Amount of Methods: 13
+ * Total Amount of Variables: 5
+ * */
+
 public class Game
 {
     static Map map;
@@ -12,7 +22,15 @@ public class Game
     static int playerTurn;
     static Player[] players;
     ArrayList<Integer> lostPlayers;
-
+    /**
+     * Game constructor.
+     *
+     * Receives the amount of players and map size from user input.
+     * user input is verified trough different methods in the class.
+     *
+     * Used in main method.
+     *
+     * */
     Game()
     {
         map = new Map();
@@ -44,6 +62,16 @@ public class Game
         playerWon = false;
     }
 
+    /**
+     * Verifies the input from the user too see whether the player count
+     * and map size are acceptable. If not a custom exception is thrown.
+     *
+     * This method is used in the game constructor.
+     *
+     * @param amountOfPlayers: the amount of players
+     * @param mapSize: the size of the map(MapSize x MapSize)
+     *
+     * */
     void checkPlayerMap(int amountOfPlayers, int mapSize) throws PlayerMapRatioException
     {
         if((2 <= amountOfPlayers && amountOfPlayers <= 4) && (5 <= mapSize && mapSize <= 50))
@@ -65,6 +93,14 @@ public class Game
         setNumberOfPlayers(amountOfPlayers, mapSize);
     }
 
+    /**
+    * Checks whether all players are dead.
+    * Used in startGame()
+    *
+    *@noparam
+    *@return true if all dead / false if not all dead.
+    *
+    * */
     boolean allPlayersAreDead()
     {
         if(lostPlayers.size() == players.length)
@@ -76,6 +112,14 @@ public class Game
         return false;
     }
 
+    /**
+     * Switches to a player that is still alive.
+     * Used in startGame()
+     *
+     *@noparam
+     *@return  void
+     *
+     * */
     void switchToAlivePlayer()
     {
         while(isPlayerDead (playerTurn))
@@ -84,6 +128,15 @@ public class Game
         }
     }
 
+    /**
+     * Core method to play the game.
+     * Checks if the players wins after input.
+     * Uses different methods in the class to verify a player's status in the game.
+     * Also uses generateHTMLFiles() to generate files for specific players.
+     *
+     *@noparam
+     *@return  void
+     * */
     void startGame()
     {
         Random rand = new Random();
@@ -102,6 +155,13 @@ public class Game
         }
     }
 
+    /**
+     * Gets input from user and verifies that it's a valid move.
+     * Used in startGame()
+     *
+     *@noparam
+     *@return  void
+     * */
     void tryToMove()
     {
         boolean validInput = false;
@@ -129,6 +189,15 @@ public class Game
                             players[playerTurn].getMovedPositions().get(players[playerTurn].getMovedPositions().size() - 1));
     }
 
+    /**
+     * Checks the tile that a user moves into.
+     * if the tile is water the user dies.
+     * if the tile is treasure the user wins.
+     * Used in startGame()
+     *
+     *@noparam
+     *@return  void
+     * */
     void CheckMovedTile()
     {
         Position lastPlayerPosition = players[playerTurn].getLastPosition();
@@ -151,6 +220,13 @@ public class Game
         }
     }
 
+    /**
+     * Generates the required html for the current player.
+     * Used in startGame().
+     *
+     *@noparam
+     *@return  void
+     * */
     static void generateHTMLFiles()
     {
         try
@@ -170,6 +246,13 @@ public class Game
         }
     }
 
+    /**
+     * Generates the required string for the html.
+     * Used in generateHTMLFiles().
+     *
+     *@noparam
+     *@return  string
+     * */
     static String htmlString()
     {
         StringBuilder htmlString = new StringBuilder();
@@ -241,6 +324,14 @@ public class Game
         return htmlString.toString();
     }
 
+    /**
+     * Gives the players starting positions which are non water tiles and non treasure tiles
+     * Used in checkPlayerMap()
+     *
+     *@param amountOfPlayers - number of players
+     *@param mapSize - map size
+     *@return  true for correct amount of player / false for incorrect amount of players
+     * */
     boolean setNumberOfPlayers(int amountOfPlayers, int mapSize)
     {
         Random rand = new Random();
@@ -266,6 +357,13 @@ public class Game
         }
     }
 
+    /**
+     * Checks if a player is dead.
+     * Used in switchToAlivePlayer()
+     *
+     *@param player - the player to check for.
+     *@return  true if dead / false if alive
+     * */
     boolean isPlayerDead(int player)
     {
         for (int aLostPlayer : lostPlayers)
@@ -276,6 +374,11 @@ public class Game
         return false;
     }
 
+    /**
+     * Main method used to invoke startGame()
+     *
+     *
+     * */
     public static void main(String args[])
     {
         Game game = new Game();
