@@ -32,7 +32,7 @@ public class GameTest
     @Test
     public void testMapSet()
     {
-        assertEquals(5, game.mapSizeInput);
+        assertEquals(5, game.mapSize);
     }
     @Test
     public void testPlayerDoesNotStartonWaterorTreasure(){
@@ -50,7 +50,7 @@ public class GameTest
         game.checkPlayerMap(9,5);
     }
 
-
+    @Test
     public void testExceptionCatch(){
         String data = "10\n5\n2\n5";
         System.setIn(new ByteArrayInputStream(data.getBytes()));

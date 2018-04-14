@@ -19,7 +19,6 @@ public class Game {
      ArrayList<Integer> lostPlayers;
      Random rand;
 
-
     int amountOfPlayersInput;
     int mapSizeInput;
 
@@ -33,40 +32,28 @@ public class Game {
 
         System.out.println("Please enter the dimension size of the map");
         mapSizeInput = scanner.nextInt();
-
-
         players = new Player[amountOfPlayersInput];
-
-        try
-        {
-            checkPlayerMap(amountOfPlayersInput, mapSizeInput);
-        }
-        catch (PlayerMapRatioException playerMapRatioException){
-            System.out.println(playerMapRatioException.getExceptionMessage());
-            System.out.println("Please enter the number of players");
-            amountOfPlayers = scanner.nextInt();
-
-            System.out.println("Please enter the dimension size of the map");
-            mapSize = scanner.nextInt();
-        }
-
-
-        players = new Player[amountOfPlayers];
         boolean validInput = false;
+        mapSize = mapSizeInput;
+        amountOfPlayers = amountOfPlayersInput;
         while (!validInput){
             try{
-                checkPlayerMap(amountOfPlayers,mapSize);
+                checkPlayerMap(amountOfPlayersInput, mapSizeInput);
                 validInput = true;
             }catch (PlayerMapRatioException playerMapRatioException){
+                System.out.println(playerMapRatioException.getExceptionMessage());
                 System.out.println("Please enter the number of players");
-                amountOfPlayers = scanner.nextInt();
+                amountOfPlayersInput = scanner.nextInt();
 
                 System.out.println("Please enter the dimension size of the map");
-                mapSize = scanner.nextInt();
+                mapSizeInput = scanner.nextInt();
+                mapSize = mapSizeInput;
+                amountOfPlayers = amountOfPlayersInput;
             }
+
         }
 
-         playerWon = false;
+        playerWon = false;
 
      }
 
