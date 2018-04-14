@@ -4,48 +4,76 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
+/**
+* Main class to run game
+*
+* All class variables are package bound to be able to
+* execute different tests.
+*
+* Total Amount of Methods: 13
+* Total Amount of Variables: 10
+* */
+public class Game {
+     static int playerTurn;
+     static Map map;
+     static Player[] players;
+     int amountOfPlayers;
+     int mapSize;
+     boolean playerWon;
+     ArrayList<Integer> lostPlayers;
+     Random rand;
 
-public class Game
-{
-    static Map map;
-    boolean playerWon;
-    static int playerTurn;
-    static Player[] players;
-    ArrayList<Integer> lostPlayers;
-
-    Game()
-    {
-        map = new Map();
-
+    int amountOfPlayersInput;
+    int mapSizeInput;
+    /**
+     * Game constructor
+     *
+     * Receives the amount of players and map size from user input.
+     * user input is verified trough different methods in the class
+     *
+     * */
+    Game(){
         Scanner scanner = new Scanner(System.in);
         lostPlayers = new ArrayList<Integer>();
+        map = new Map();
+        rand = new Random();
+        System.out.println("Please enter the number of players");
+        amountOfPlayersInput = scanner.nextInt();
 
+        System.out.println("Please enter the dimension size of the map");
+        mapSizeInput = scanner.nextInt();
+        players = new Player[amountOfPlayersInput];
         boolean validInput = false;
-
-        while (!validInput)
-        {
-            try
-            {
-                System.out.println("Please enter the number of players");
-                int amountOfPlayersInput = scanner.nextInt();
-
-                System.out.println("Please enter the dimension size of the map");
-                int mapSizeInput = scanner.nextInt();
-
+        mapSize = mapSizeInput;
+        amountOfPlayers = amountOfPlayersInput;
+        while (!validInput){
+            try{
                 checkPlayerMap(amountOfPlayersInput, mapSizeInput);
                 validInput = true;
+            }catch (PlayerMapRatioException playerMapRatioException){
+                System.out.println(playerMapRatioException.getExceptionMessage());
+                System.out.println("Please enter the number of players");
+                amountOfPlayersInput = scanner.nextInt();
+
+                System.out.println("Please enter the dimension size of the map");
+                mapSizeInput = scanner.nextInt();
+                mapSize = mapSizeInput;
+                amountOfPlayers = amountOfPlayersInput;
             }
-            catch (PlayerMapRatioException playerMapRatioException)
-            {
-                System.out.println(playerMapRatioException.getMessage());
-            }
+
         }
 
         playerWon = false;
-    }
 
-    void checkPlayerMap(int amountOfPlayers, int mapSize) throws PlayerMapRatioException
-    {
+     }
+    /**
+     * Verifies the input from the user too see whether the player count
+     * and map size are acceptable. If not an exception is thrown.
+     *
+     * This method is used in the game constructor
+     * @param amountOfPlayers the amount of players
+     * */
+    void checkPlayerMap(int amountOfPlayers, int mapSize) throws PlayerMapRatioException {
         if((2 <= amountOfPlayers && amountOfPlayers <= 4) && (5 <= mapSize && mapSize <= 50))
         {
             System.out.println("Player Count: " + amountOfPlayers + "\n" + "Map Dimension: " + mapSize + "x" + mapSize);
@@ -62,53 +90,50 @@ public class Game
         map.setMapSize(mapSize, mapSize);
         map.generate();
 
-        setNumberOfPlayers(amountOfPlayers, mapSize);
+        setNumberOfPlayers(amountOfPlayers);
     }
 
-    boolean allPlayersAreDead()
-    {
-        if(lostPlayers.size() == players.length)
+    boolean CheckIfAllPlayerAreDead(){
+        if(lostPlayers.size() == amountOfPlayers)
         {
             System.out.println("All players are dead");
             return true;
         }
-
         return false;
     }
 
-    void switchToAlivePlayer()
-    {
+    void SwitchToAlivePlayer(){
         while(isPlayerDead (playerTurn))
         {
-            if(playerTurn++ >= players.length)    {   playerTurn = 0; }
+            playerTurn += 1;
+            if(playerTurn >= players.length)    {   playerTurn = 0; }
         }
     }
 
     void startGame()
     {
-        Random rand = new Random();
+
         playerTurn = rand.nextInt(players.length);
+
 
         while (!playerWon)
         {
             generateHTMLFiles();
-            if(allPlayersAreDead())   {   break;    }
 
-            switchToAlivePlayer();
-            tryToMove();
+            if(CheckIfAllPlayerAreDead())
+                break;
+            SwitchToAlivePlayer();
+
+            TryToMove();
+
             CheckMovedTile();
-
             if(playerTurn ++ >= players.length - 1)    {   playerTurn = 0; }
         }
     }
-
-    void tryToMove()
-    {
-        boolean validInput = false;
+    void TryToMove(){
         Scanner scanner = new Scanner(System.in);
-
+        boolean validInput = false;
         System.out.println("Player " + playerTurn + ": Make your move");
-
         do
         {
             char moveDirection = scanner.next().charAt(0);
@@ -123,16 +148,16 @@ public class Game
                 validInput = true;
             }
         } while (!validInput);
-
         System.out.println("Successfully moved from " +
-                            players[playerTurn].getMovedPositions().get(players[playerTurn].getMovedPositions().size() - 2) + " to " +
-                            players[playerTurn].getMovedPositions().get(players[playerTurn].getMovedPositions().size() - 1));
+                players[playerTurn].getMovedPositions().get(players[playerTurn].getMovedPositions().size() - 2) + " to " +
+                players[playerTurn].getMovedPositions().get(players[playerTurn].getMovedPositions().size() - 1));
+
+
+
+
     }
-
-    void CheckMovedTile()
-    {
+    void CheckMovedTile(){
         Position lastPlayerPosition = players[playerTurn].getLastPosition();
-
         switch (map.getTileType(lastPlayerPosition.getXCoordinate(), lastPlayerPosition.getYCoordinate()))
         {
             case WATER :
@@ -143,14 +168,11 @@ public class Game
             }
 
             case TREASURE:
-            {
-                System.out.println("\nPlayer: " + playerTurn + " has Won the Game!");
+                System.out.println("Player: " + playerTurn + " has Won the Game!");
                 playerWon = true;
                 break;
-            }
         }
     }
-
     static void generateHTMLFiles()
     {
         try
@@ -175,7 +197,8 @@ public class Game
         StringBuilder htmlString = new StringBuilder();
 
         htmlString.append("<!DOCTYPE html>\n" +
-                "<html>\n<head>\n" +
+                "<html>\n" +
+                "<head>\n" +
                 "    <link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\">\n" +
                 "</head>\n" +
                 "<body>\n" +
@@ -207,9 +230,18 @@ public class Game
 
             for (int j = 0; j < map.getMapDetail()[0].length + 1; j ++)
             {
-                if (i == 0 && j == 0)   {   htmlString.append("        <th class=\"coordinateCell\"></th> \n");                                                     }
-                else if (i == 0)        {   htmlString.append("        <th class=\"coordinateCell\">").append(String.format("%02d", j - 1)).append("</th> \n");     }
-                else if (j == 0)        {   htmlString.append("        <th class=\"coordinateCell\">").append(String.format("%02d", i - 1)).append("</th> \n");     }
+                if (i == 0 && j == 0)
+                {
+                    htmlString.append("        <th class=\"coordinateCell\"></th> \n");
+                }
+                else if (i == 0)
+                {
+                    htmlString.append("        <th class=\"coordinateCell\">").append(String.format("%02d", j - 1)).append("</th> \n");
+                }
+                else if (j == 0)
+                {
+                    htmlString.append("        <th class=\"coordinateCell\">").append(String.format("%02d", i - 1)).append("</th> \n");
+                }
                 else
                 {
                     htmlString.append("        <th class=\"");
@@ -241,20 +273,15 @@ public class Game
         return htmlString.toString();
     }
 
-    boolean setNumberOfPlayers(int amountOfPlayers, int mapSize)
+    boolean setNumberOfPlayers(int amountOfPlayers)
     {
-        Random rand = new Random();
-        players = new Player[amountOfPlayers];
-
         if(2 <= amountOfPlayers && amountOfPlayers <= 8)
         {
             for (int i = 0; i < amountOfPlayers; i ++)
             {
-                players[i] = new Player(mapSize);
-
-                while(!map.isTileBeingUsed(players[i].getLastPosition()))
-                {
-                    players[i].setPlayerStartPosition(new Position(rand.nextInt(mapSize), rand.nextInt(mapSize)));
+                players[i] = new Player(map.getMapDetail().length);
+                while(!map.isTileBeingUsed(players[i].getLastPosition())){
+                    players[i].setPlayerStartPosition(new Position(rand.nextInt(mapSize),rand.nextInt(mapSize)));
                 }
             }
 
@@ -266,7 +293,7 @@ public class Game
         }
     }
 
-    boolean isPlayerDead(int player)
+     boolean isPlayerDead(int player)
     {
         for (int aLostPlayer : lostPlayers)
         {
