@@ -5,27 +5,35 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
-public class Game
-{
-    private static Map map;
-    private static int playerTurn;
-    static Player[] players;
-    ArrayList<Integer> lostPlayers;
+import static part2_maze.TileType.TREASURE;
+
+public class Game {
+
+     static int playerTurn;
+     static Map map;
+     static Player[] players;
+     static String current_file_name;
+     int amountOfPlayers;
+     int mapSize;
+     boolean playerWon;
+     ArrayList<Integer> lostPlayers;
+     Random rand;
+
 
     int amountOfPlayersInput;
     int mapSizeInput;
 
-    Game()
-    {
+    Game(){
         Scanner scanner = new Scanner(System.in);
         lostPlayers = new ArrayList<Integer>();
         map = new Map();
-
+        rand = new Random();
         System.out.println("Please enter the number of players");
         amountOfPlayersInput = scanner.nextInt();
 
         System.out.println("Please enter the dimension size of the map");
         mapSizeInput = scanner.nextInt();
+
 
         players = new Player[amountOfPlayersInput];
 
@@ -33,15 +41,36 @@ public class Game
         {
             checkPlayerMap(amountOfPlayersInput, mapSizeInput);
         }
-        catch (PlayerMapRatioException playerMapRatioException)
-        {
+        catch (PlayerMapRatioException playerMapRatioException){
             System.out.println(playerMapRatioException.getExceptionMessage());
-            System.exit(0);
-        }
-    }
+            System.out.println("Please enter the number of players");
+            amountOfPlayers = scanner.nextInt();
 
-    void checkPlayerMap(int amountOfPlayers, int mapSize) throws PlayerMapRatioException
-    {
+            System.out.println("Please enter the dimension size of the map");
+            mapSize = scanner.nextInt();
+        }
+
+
+        players = new Player[amountOfPlayers];
+        boolean validInput = false;
+        while (!validInput){
+            try{
+                checkPlayerMap(amountOfPlayers,mapSize);
+                validInput = true;
+            }catch (PlayerMapRatioException playerMapRatioException){
+                System.out.println("Please enter the number of players");
+                amountOfPlayers = scanner.nextInt();
+
+                System.out.println("Please enter the dimension size of the map");
+                mapSize = scanner.nextInt();
+            }
+        }
+
+         playerWon = false;
+
+     }
+
+    void checkPlayerMap(int amountOfPlayers, int mapSize) throws PlayerMapRatioException {
         if((2 <= amountOfPlayers && amountOfPlayers <= 4) && (5 <= mapSize && mapSize <= 50))
         {
             System.out.println("Player Count: " + amountOfPlayers + "\n" + "Map Dimension: " + mapSize + "x" + mapSize);
@@ -61,76 +90,86 @@ public class Game
         setNumberOfPlayers(amountOfPlayers);
     }
 
-    private void startGame()
-    {
-        boolean playerWon = false;
-        Random rand = new Random();
-
-        Scanner scanner = new Scanner(System.in);
-
-        playerTurn = rand.nextInt(players.length);
-        setNumberOfPlayers(players.length);
-
-        while (!playerWon)
+    boolean CheckIfAllPlayerAreDead(){
+        if(lostPlayers.size() == amountOfPlayers)
         {
-            boolean validInput = false;
+            System.out.println("All players are dead");
+            return true;
+        }
+        return false;
+    }
 
-            generateHTMLFiles();
-
-            if(lostPlayers.size() == players.length)
-            {
-                System.out.println("All players are dead");
-                break;
-            }
-
-            while(isPlayerDead (playerTurn))
-            {
-                playerTurn += 1;
-                if(playerTurn >= players.length)    {   playerTurn = 0; }
-            }
-
-            System.out.println("Player " + playerTurn + ": Make your move");
-
-            do
-            {
-                char moveDirection = scanner.next().charAt(0);
-
-                if(!players[playerTurn].move(moveDirection, map))
-                {
-                    System.out.println("Try again and make sure 'U' or 'L' or 'D' or 'R' are inputted and are within the map");
-                }
-                else
-                {
-                    generateHTMLFiles();
-                    validInput = true;
-                }
-            } while (!validInput);
-
-            System.out.println("Successfully moved from " +
-                                players[playerTurn].getMovedPositions().get(players[playerTurn].getMovedPositions().size() - 2) + " to " +
-                                players[playerTurn].getMovedPositions().get(players[playerTurn].getMovedPositions().size() - 1));
-
-            Position lastPlayerPosition = players[playerTurn].getLastPosition();
-
-            switch (map.getTileType(lastPlayerPosition.getXCoordinate(), lastPlayerPosition.getYCoordinate()))
-            {
-                case WATER :
-                {
-                    System.out.println("Player: " + playerTurn + " has died");
-                    lostPlayers.add(playerTurn);
-                    break;
-                }
-
-                case TREASURE :
-                    System.out.println("Player: " + playerTurn + " has Won the Game!");
-                    playerWon = true;
-                    break;
-            }
-
-            if(playerTurn ++ >= players.length - 1)    {   playerTurn = 0; }
+    void SwitchToAlivePlayer(){
+        while(isPlayerDead (playerTurn))
+        {
+            playerTurn += 1;
+            if(playerTurn >= players.length)    {   playerTurn = 0; }
         }
     }
 
+    void startGame()
+    {
+
+        playerTurn = rand.nextInt(players.length);
+
+
+        while (!playerWon)
+        {
+            generateHTMLFiles();
+
+            if(CheckIfAllPlayerAreDead())
+                break;
+            SwitchToAlivePlayer();
+
+            TryToMove();
+
+            CheckMovedTile();
+            if(playerTurn ++ >= players.length - 1)    {   playerTurn = 0; }
+        }
+    }
+    void TryToMove(){
+        Scanner scanner = new Scanner(System.in);
+        boolean validInput = false;
+        System.out.println("Player " + playerTurn + ": Make your move");
+        do
+        {
+            char moveDirection = scanner.next().charAt(0);
+
+            if(!players[playerTurn].move(moveDirection, map))
+            {
+                System.out.println("Try again and make sure 'U' or 'L' or 'D' or 'R' are inputted and are within the map");
+            }
+            else
+            {
+                generateHTMLFiles();
+                validInput = true;
+            }
+        } while (!validInput);
+        System.out.println("Successfully moved from " +
+                players[playerTurn].getMovedPositions().get(players[playerTurn].getMovedPositions().size() - 2) + " to " +
+                players[playerTurn].getMovedPositions().get(players[playerTurn].getMovedPositions().size() - 1));
+
+
+
+
+    }
+    void CheckMovedTile(){
+        Position lastPlayerPosition = players[playerTurn].getLastPosition();
+        switch (map.getTileType(lastPlayerPosition.getXCoordinate(), lastPlayerPosition.getYCoordinate()))
+        {
+            case WATER :
+            {
+                System.out.println("Player: " + playerTurn + " has died");
+                lostPlayers.add(playerTurn);
+                break;
+            }
+
+            case TREASURE:
+                System.out.println("Player: " + playerTurn + " has Won the Game!");
+                playerWon = true;
+                break;
+        }
+    }
     static void generateHTMLFiles()
     {
         try
@@ -238,6 +277,9 @@ public class Game
             for (int i = 0; i < amountOfPlayers; i ++)
             {
                 players[i] = new Player(map.getMapDetail().length);
+                while(!map.isTileBeingUsed(players[i].getLastPosition())){
+                    players[i].setPlayerStartPosition(new Position(rand.nextInt(mapSize),rand.nextInt(mapSize)));
+                }
             }
 
             return true;

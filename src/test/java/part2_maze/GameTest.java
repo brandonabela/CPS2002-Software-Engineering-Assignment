@@ -34,12 +34,28 @@ public class GameTest
     {
         assertEquals(5, game.mapSizeInput);
     }
+    @Test
+    public void testPlayerDoesNotStartonWaterorTreasure(){
+        Game.players[0].setPlayerStartPosition(new Position(0,0));
+        Game.map.changeTileType(0,1,TileType.WATER);
+        game.setNumberOfPlayers(2);
+        if(Game.players[0].getLastPosition().getXCoordinate() == 0 && Game.players[0].getLastPosition().getYCoordinate() == 0)
+            fail();
+    }
 
     @Test
     public void testPlayerSetIncorrect() throws PlayerMapRatioException
     {
         exception.expect(PlayerMapRatioException.class);
         game.checkPlayerMap(9,5);
+    }
+
+
+    public void testExceptionCatch(){
+        String data = "10\n5\n2\n5";
+        System.setIn(new ByteArrayInputStream(data.getBytes()));
+        game = new Game();
+
     }
 
     @Test
@@ -114,9 +130,103 @@ public class GameTest
     }
 
     @Test
-    public void testPlayerNotDead()
-    {
-       assertFalse(game.isPlayerDead(1));
+    public void testCurrentPlayerAfterPlayerDies(){
+        Game.playerTurn = 1;
+        game.lostPlayers.add(1);
+        game.SwitchToAlivePlayer();
+        assertEquals(0,Game.playerTurn);
+    }
+
+   @Test
+   public void testPlayerNotDead(){
+       assertEquals(false,game.isPlayerDead(1));
+   }
+   @Test
+   public void testAllDeadPlayer(){
+       game.lostPlayers.add(0);
+       game.lostPlayers.add(1);
+       assertEquals(true,game.CheckIfAllPlayerAreDead());
+   }
+
+    @Test
+    public void testOneDeadPlayer(){
+        game.lostPlayers.add(1);
+        assertEquals(false,game.CheckIfAllPlayerAreDead());
+    }
+    @Test
+    public void testPlayerSwitch(){
+        game.lostPlayers.add(1);
+        game.SwitchToAlivePlayer();
+        assertEquals(0,Game.playerTurn);
+    }
+
+    @Test
+    public void TestCorrectInputForMove(){
+        Game.playerTurn = 0;
+        Game.players[0].setPlayerStartPosition(new Position(0,0));
+        String data = "R";
+        System.setIn(new ByteArrayInputStream(data.getBytes()));
+        game.TryToMove();
+        assertEquals(0,Game.players[0].getLastPosition().getYCoordinate());
+    }
+
+    @Test
+    public void testIncorrectMoveThenCorrect(){
+        Game.playerTurn = 0;
+        Game.players[0].setPlayerStartPosition(new Position(0,0));
+        String data = "U\nR";
+        System.setIn(new ByteArrayInputStream(data.getBytes()));
+        game.TryToMove();
+        assertEquals(1,Game.players[0].getLastPosition().getXCoordinate());
+    }
+
+    @Test
+    public void testPlayerMovingIntoWaterTile(){
+        Game.playerTurn = 0;
+        Game.players[0].setPlayerStartPosition(new Position(0,0));
+        String data = "R";
+        System.setIn(new ByteArrayInputStream(data.getBytes()));
+        Game.map.changeTileType(0,1,TileType.WATER);
+        game.TryToMove();
+        game.CheckMovedTile();
+        assertEquals(true,game.isPlayerDead(0));
+    }
+
+    @Test
+    public void testPlayerMovingIntoTreasure(){
+        Game.playerTurn = 0;
+        Game.players[0].setPlayerStartPosition(new Position(0,0));
+        String data = "R";
+        System.setIn(new ByteArrayInputStream(data.getBytes()));
+        Game.map.changeTileType(0,1,TileType.TREASURE);
+        game.TryToMove();
+        game.CheckMovedTile();
+        assertEquals(true,game.playerWon);
+    }
+    @Test
+    public void teststartGameWin(){
+        game.playerWon = true;
+        game.startGame();
+
+    }
+
+    @Test
+    public void teststartGameAllDeadPlayers(){
+        game.lostPlayers.add(0);
+        game.lostPlayers.add(1);
+        game.startGame();
+        assertEquals(false,game.playerWon);
+    }
+
+    @Test
+    public void teststartGamePlayerWins(){
+        game.lostPlayers.add(1);
+        Game.players[0].setPlayerStartPosition(new Position(0,0));
+        String data = "R";
+        System.setIn(new ByteArrayInputStream(data.getBytes()));
+        Game.map.changeTileType(0,1,TileType.TREASURE);
+        game.startGame();
+        assertEquals(true,game.playerWon);
     }
 
     @After
