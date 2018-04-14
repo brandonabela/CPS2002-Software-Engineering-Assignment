@@ -34,6 +34,14 @@ public class GameTest
     {
         assertEquals(5,game.mapSize);
     }
+    @Test
+    public void testPlayerDoesNotStartonWaterorTreasure(){
+        Game.players[0].setPlayerStartPosition(new Position(0,0));
+        Game.map.changeTileType(0,1,TileType.WATER);
+        game.setNumberOfPlayers(2);
+        if(Game.players[0].getLastPos().getXCoordinate() == 0 && Game.players[0].getLastPos().getYCoordinate() == 0)
+            fail();
+    }
 
     @Test
     public void testExceptionCatch(){

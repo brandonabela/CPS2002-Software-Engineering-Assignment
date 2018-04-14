@@ -17,12 +17,15 @@ public class Game
      int mapSize;
      boolean playerWon;
      ArrayList<Integer> lostPlayers;
+     Random rand;
+
+
 
      Game(){
         Scanner scanner = new Scanner(System.in);
         lostPlayers = new ArrayList<Integer>();
         map = new Map();
-
+        rand = new Random();
         System.out.println("Please enter the number of players");
         amountOfPlayers = scanner.nextInt();
 
@@ -46,6 +49,7 @@ public class Game
         }
 
          playerWon = false;
+
      }
 
      void CheckPlayersAndMap(int playerC, int mapSz) throws PlayerToMapRatioException {
@@ -80,7 +84,7 @@ public class Game
     }
      void startGame()
     {
-        Random rand = new Random();
+
         playerTurn = rand.nextInt(players.length);
 
 
@@ -252,6 +256,9 @@ public class Game
             for (int i = 0; i < amountOfPlayers; i ++)
             {
                 players[i] = new Player(map.getMapDetail().length);
+                while(!map.isTileBeingUsed(players[i].getLastPos())){
+                    players[i].setPlayerStartPosition(new Position(rand.nextInt(mapSize),rand.nextInt(mapSize)));
+                }
             }
 
             return true;
