@@ -63,8 +63,6 @@ class Player
                 if (moves.length() > 1) {   moves.append(", ");  }
                 moves.append("Down");
 
-                System.out.println(map.getMapDetail().length);
-
                 if (playerPosition.getYCoordinate() + 1 < map.getMapDetail().length)
                 {
                     this.movedPositions.add(new Position(playerPosition.getXCoordinate(), playerPosition.getYCoordinate() + 1));

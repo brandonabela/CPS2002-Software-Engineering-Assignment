@@ -32,13 +32,16 @@ public class GameTest
     @Test
     public void testMapSet()
     {
-        assertEquals(5, game.mapSize);
+        assertEquals(5, Game.map.getMapDetail().length);
     }
+
     @Test
-    public void testPlayerDoesNotStartonWaterorTreasure(){
+    public void testPlayerDoesNotStartonWaterorTreasure()
+    {
         Game.players[0].setPlayerStartPosition(new Position(0,0));
-        Game.map.changeTileType(0,1,TileType.WATER);
-        game.setNumberOfPlayers(2);
+        Game.map.changeTileType(new Position(0, 1), TileType.WATER);
+        game.setNumberOfPlayers(2, 5);
+
         if(Game.players[0].getLastPosition().getXCoordinate() == 0 && Game.players[0].getLastPosition().getYCoordinate() == 0)
             fail();
     }
@@ -74,20 +77,20 @@ public class GameTest
         }
         catch (PlayerMapRatioException playerMapRatioException)
         {
-            Assert.assertEquals("The map size of 80 x 80 is not allowed for 5 players", playerMapRatioException.getExceptionMessage());
+            Assert.assertEquals("The map size of 80 x 80 is not allowed for 5 players", playerMapRatioException.getMessage());
         }
     }
 
     @Test
     public void testIncorrectPlayerCount()
     {
-        assertFalse(game.setNumberOfPlayers(10));
+        assertFalse(game.setNumberOfPlayers(10, 5));
     }
 
     @Test
     public void testCorrectPlayerCount()
     {
-        assertTrue(game.setNumberOfPlayers(2));
+        assertTrue(game.setNumberOfPlayers(2, 5));
     }
 
     @Test
@@ -97,7 +100,7 @@ public class GameTest
         System.setIn(new ByteArrayInputStream(data.getBytes()));
         game = new Game();
 
-        assertEquals(8,game.amountOfPlayersInput);
+        assertEquals(8, Game.players.length);
     }
 
     @Test
@@ -107,7 +110,7 @@ public class GameTest
         System.setIn(new ByteArrayInputStream(data.getBytes()));
         game = new Game();
 
-        assertEquals(20, game.mapSizeInput);
+        assertEquals(20, Game.map.getMapDetail().length);
     }
 
     @Test
@@ -133,7 +136,7 @@ public class GameTest
     public void testCurrentPlayerAfterPlayerDies(){
         Game.playerTurn = 1;
         game.lostPlayers.add(1);
-        game.SwitchToAlivePlayer();
+        game.switchToAlivePlayer();
         assertEquals(0,Game.playerTurn);
     }
 
@@ -145,18 +148,18 @@ public class GameTest
    public void testAllDeadPlayer(){
        game.lostPlayers.add(0);
        game.lostPlayers.add(1);
-       assertEquals(true,game.CheckIfAllPlayerAreDead());
+       assertEquals(true,game.allPlayersAreDead());
    }
 
     @Test
     public void testOneDeadPlayer(){
         game.lostPlayers.add(1);
-        assertEquals(false,game.CheckIfAllPlayerAreDead());
+        assertEquals(false,game.allPlayersAreDead());
     }
     @Test
     public void testPlayerSwitch(){
         game.lostPlayers.add(1);
-        game.SwitchToAlivePlayer();
+        game.switchToAlivePlayer();
         assertEquals(0,Game.playerTurn);
     }
 
@@ -166,7 +169,7 @@ public class GameTest
         Game.players[0].setPlayerStartPosition(new Position(0,0));
         String data = "R";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
-        game.TryToMove();
+        game.tryToMove();
         assertEquals(0,Game.players[0].getLastPosition().getYCoordinate());
     }
 
@@ -176,7 +179,7 @@ public class GameTest
         Game.players[0].setPlayerStartPosition(new Position(0,0));
         String data = "U\nR";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
-        game.TryToMove();
+        game.tryToMove();
         assertEquals(1,Game.players[0].getLastPosition().getXCoordinate());
     }
 
@@ -186,8 +189,8 @@ public class GameTest
         Game.players[0].setPlayerStartPosition(new Position(0,0));
         String data = "R";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
-        Game.map.changeTileType(0,1,TileType.WATER);
-        game.TryToMove();
+        Game.map.changeTileType(new Position(0, 1), TileType.WATER);
+        game.tryToMove();
         game.CheckMovedTile();
         assertEquals(true,game.isPlayerDead(0));
     }
@@ -198,8 +201,8 @@ public class GameTest
         Game.players[0].setPlayerStartPosition(new Position(0,0));
         String data = "R";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
-        Game.map.changeTileType(0,1,TileType.TREASURE);
-        game.TryToMove();
+        Game.map.changeTileType(new Position(0, 1), TileType.TREASURE);
+        game.tryToMove();
         game.CheckMovedTile();
         assertEquals(true,game.playerWon);
     }
@@ -224,7 +227,7 @@ public class GameTest
         Game.players[0].setPlayerStartPosition(new Position(0,0));
         String data = "R";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
-        Game.map.changeTileType(0,1,TileType.TREASURE);
+        Game.map.changeTileType(new Position(0, 1), TileType.TREASURE);
         game.startGame();
         assertEquals(true,game.playerWon);
     }

@@ -62,12 +62,17 @@ class Map
 
     boolean isTileBeingUsed(Position positionToCheck)
     {
-        return !tileToString(mapDetail[positionToCheck.getXCoordinate()][positionToCheck.getYCoordinate()]).equals("grassTile");
+        return tileToString(mapDetail[positionToCheck.getXCoordinate()][positionToCheck.getYCoordinate()]).equals("grassTile");
     }
 
     TileType[][] getMapDetail()
     {
         return mapDetail;
+    }
+
+    void changeTileType(Position tileCoordinate, TileType tileType)
+    {
+        mapDetail[tileCoordinate.getXCoordinate()][tileCoordinate.getYCoordinate()] = tileType;
     }
 
     String tileToString(TileType tileType)
@@ -80,16 +85,5 @@ class Map
             default         :   return "unknownTile";
         }
     }
-
-
-
-
-
-    void changeTileType(int x,int y,TileType tileType){
-        mapDetail[x][y] = tileType;
-    }
-
-
-
 }
 
