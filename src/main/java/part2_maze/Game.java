@@ -5,157 +5,141 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
-
-
 public class Game
 {
-    static int playerTurn;
-    static Map map;
+    private static Map map;
+    private static int playerTurn;
     static Player[] players;
-    static String current_file_name;
-    int amountOfPlayers;
-    int mapSize;
-    boolean playerWon;
     ArrayList<Integer> lostPlayers;
-    Random rand;
 
+    int amountOfPlayersInput;
+    int mapSizeInput;
 
-
-    Game(){
+    Game()
+    {
         Scanner scanner = new Scanner(System.in);
         lostPlayers = new ArrayList<Integer>();
         map = new Map();
-        rand = new Random();
+
         System.out.println("Please enter the number of players");
-        amountOfPlayers = scanner.nextInt();
+        amountOfPlayersInput = scanner.nextInt();
 
         System.out.println("Please enter the dimension size of the map");
-        mapSize = scanner.nextInt();
+        mapSizeInput = scanner.nextInt();
 
-        players = new Player[amountOfPlayers];
-        boolean validInput = false;
-        while (!validInput){
-            try{
-                CheckPlayersAndMap(amountOfPlayers,mapSize);
-                validInput = true;
-            }catch (PlayerMapRatioException ignored){
-                System.out.println("Please enter the number of players");
-                amountOfPlayers = scanner.nextInt();
+        players = new Player[amountOfPlayersInput];
 
-                System.out.println("Please enter the dimension size of the map");
-                mapSize = scanner.nextInt();
-            }
-
-        }
-
-        playerWon = false;
-
-    }
-
-    void CheckPlayersAndMap(int playerC, int mapSz) throws PlayerMapRatioException {
-        if(playerC >=2 && playerC <=4 && mapSz >= 5 && mapSz <= 50)
+        try
         {
-            System.out.println("Player Count: "+playerC+"\n"+"Map Dimension: "+mapSz+"x"+mapSz);
-        }else if(playerC >=5 && playerC <=8 && mapSz >= 8 && mapSz <= 50){
-            System.out.println("Player Count: "+playerC+"\n"+"Map Dimension: "+mapSz+"x"+mapSz);
-        }else{
-            throw new PlayerMapRatioException();
+            checkPlayerMap(amountOfPlayersInput, mapSizeInput);
         }
-        map.setMapSize(mapSz, mapSz);
-        map.generate();
-        setNumberOfPlayers(playerC);
+        catch (PlayerMapRatioException playerMapRatioException)
+        {
+            System.out.println(playerMapRatioException.getExceptionMessage());
+            System.exit(0);
+        }
     }
 
-    boolean CheckIfAllPlayerAreDead(){
-        if(lostPlayers.size() == amountOfPlayers)
-        {
-            System.out.println("All players are dead");
-            return true;
-        }
-        return false;
-    }
-
-    void SwitchToAlivePlayer(){
-        while(isPlayerDead (playerTurn))
-        {
-            playerTurn += 1;
-            if(playerTurn >= players.length)    {   playerTurn = 0; }
-        }
-    }
-    void startGame()
+    void checkPlayerMap(int amountOfPlayers, int mapSize) throws PlayerMapRatioException
     {
+        if((2 <= amountOfPlayers && amountOfPlayers <= 4) && (5 <= mapSize && mapSize <= 50))
+        {
+            System.out.println("Player Count: " + amountOfPlayers + "\n" + "Map Dimension: " + mapSize + "x" + mapSize);
+        }
+        else if((5 <= amountOfPlayers && amountOfPlayers <= 8) && (8 <= mapSize && mapSize <= 50))
+        {
+            System.out.println("Player Count: " + amountOfPlayers + "\n" + "Map Dimension: " + mapSize + "x" + mapSize);
+        }
+        else
+        {
+            throw new PlayerMapRatioException(amountOfPlayers, mapSize);
+        }
+
+        map.setMapSize(mapSize, mapSize);
+        map.generate();
+
+        setNumberOfPlayers(amountOfPlayers);
+    }
+
+    private void startGame()
+    {
+        boolean playerWon = false;
+        Random rand = new Random();
+
+        Scanner scanner = new Scanner(System.in);
 
         playerTurn = rand.nextInt(players.length);
-
+        setNumberOfPlayers(players.length);
 
         while (!playerWon)
         {
+            boolean validInput = false;
+
             generateHTMLFiles();
 
-            if(CheckIfAllPlayerAreDead())
+            if(lostPlayers.size() == players.length)
+            {
+                System.out.println("All players are dead");
                 break;
-            SwitchToAlivePlayer();
+            }
 
-            TryToMove();
+            while(isPlayerDead (playerTurn))
+            {
+                playerTurn += 1;
+                if(playerTurn >= players.length)    {   playerTurn = 0; }
+            }
 
-            CheckMovedTile();
+            System.out.println("Player " + playerTurn + ": Make your move");
+
+            do
+            {
+                char moveDirection = scanner.next().charAt(0);
+
+                if(!players[playerTurn].move(moveDirection, map))
+                {
+                    System.out.println("Try again and make sure 'U' or 'L' or 'D' or 'R' are inputted and are within the map");
+                }
+                else
+                {
+                    generateHTMLFiles();
+                    validInput = true;
+                }
+            } while (!validInput);
+
+            System.out.println("Successfully moved from " +
+                                players[playerTurn].getMovedPositions().get(players[playerTurn].getMovedPositions().size() - 2) + " to " +
+                                players[playerTurn].getMovedPositions().get(players[playerTurn].getMovedPositions().size() - 1));
+
+            Position lastPlayerPosition = players[playerTurn].getLastPosition();
+
+            switch (map.getTileType(lastPlayerPosition.getXCoordinate(), lastPlayerPosition.getYCoordinate()))
+            {
+                case WATER :
+                {
+                    System.out.println("Player: " + playerTurn + " has died");
+                    lostPlayers.add(playerTurn);
+                    break;
+                }
+
+                case TREASURE :
+                    System.out.println("Player: " + playerTurn + " has Won the Game!");
+                    playerWon = true;
+                    break;
+            }
+
             if(playerTurn ++ >= players.length - 1)    {   playerTurn = 0; }
         }
     }
-    void TryToMove(){
-        Scanner scanner = new Scanner(System.in);
-        boolean validInput = false;
-        System.out.println("Player " + playerTurn + ": Make your move");
-        do
-        {
-            char moveDirection = scanner.next().charAt(0);
 
-            if(!players[playerTurn].move(moveDirection, map))
-            {
-                System.out.println("Try again and make sure 'U' or 'L' or 'D' or 'R' are inputted and are within the map");
-            }
-            else
-            {
-                generateHTMLFiles();
-                validInput = true;
-            }
-        } while (!validInput);
-        System.out.println("Successfully moved from " +
-                players[playerTurn].getMovedPositions().get(players[playerTurn].getMovedPositions().size() - 2) + " to " +
-                players[playerTurn].getMovedPositions().get(players[playerTurn].getMovedPositions().size() - 1));
-
-
-    }
-    void CheckMovedTile(){
-        Position lastPlayerPosition = players[playerTurn].getLastPosition();
-
-        switch (map.getTileType(lastPlayerPosition.getXCoordinate(), lastPlayerPosition.getYCoordinate()))
-        {
-            case WATER :
-            {
-                System.out.println("Player: " + playerTurn + " has died");
-                lostPlayers.add(playerTurn);
-                break;
-            }
-
-            case TREASURE:
-                System.out.println("Player: " + playerTurn + " has Won the Game!");
-                playerWon = true;
-                break;
-        }
-
-
-    }
     static void generateHTMLFiles()
     {
         try
         {
-            current_file_name = "map_player_" + String.format("%02d", playerTurn) + ".html";
             File playerMapFile = new File("src/gameFiles/map_player_" + String.format("%02d", playerTurn) + ".html");
             playerMapFile.createNewFile();
 
-            FileWriter fw = new FileWriter(playerMapFile);
-            BufferedWriter bufferedWriter = new BufferedWriter(fw);
+            FileWriter fileWriter = new FileWriter(playerMapFile);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
             bufferedWriter.write(htmlString());
 
             bufferedWriter.close();
@@ -178,27 +162,25 @@ public class Game
                 "<body>\n" +
                 "<style type=\"text/css\">\n" +
                 "    h2, p {margin: 0;}\n" +
-                "    i {font-size: 40px; color: white;}\n" +
-                "    table {height: 100vh; width: 100vw;}\n" +
-                "    .tg td{font-family:Arial, sans-serif; font-size:25px; border-style:solid; border-width:1px; border-color:black; text-align: center;}\n" +
-                "    .tg th{font-family:Arial, sans-serif; font-size:25px; border-style:solid; border-width:1px; border-color:black; text-align: center;}\n" +
-                "    .tg .tableHeading{font-family:\"Arial Black\", sans-serif !important; border-color:#ffffff; background-color: blue; color: white;}\n" +
-                "    .tg .coordinateCell{font-family:\"Arial Black\", sans-serif !important; border-color:#ffffff}\n" +
+                "    i {font-size: 25px; color: white;}\n" +
+                "    table {height: 100vh; width: 100vh;}\n" +
+                "    .tg th{font-family:Arial, sans-serif; font-size: 18px; border-style:solid; border-width: 3px; border-color:black; text-align: center;}\n" +
+                "    .tg .tableHeading{font-family:\"Arial Black\", sans-serif !important; border:none; background-color: blue; color: white;}\n" +
+                "    .tg .coordinateCell{font-family:\"Arial Black\", sans-serif !important; border:none;}\n" +
                 "    .tg .grassTile{font-family:\"Arial Black\", sans-serif !important; background-color:#008000; border-color:#000000}\n" +
                 "    .tg .waterTile{font-family:\"Arial Black\", sans-serif !important; background-color:#ADD8E6; border-color:#000000}\n" +
                 "    .tg .treasureTile{font-family:\"Arial Black\", sans-serif !important; background-color:#FFFF00; border-color:#000000}\n" +
                 "    .tg .unknownTile{font-family:\"Arial Black\", sans-serif !important; background-color:#c0c0c0; border-color:#000000}\n" +
-                "</style>\n" +
-                "\n" +
+                "</style>\n\n" +
                 "<table class=\"tg\">");
 
         htmlString.append("\n    <th class=\"tableHeading\" colspan=\"")
-                .append(map.getMapDetail().length + 1)
-                .append("\"> <h2> Player ")
-                .append(String.format("%02d", playerTurn))
-                .append(" </h2> <p> Moves: ")
-                .append(players[playerTurn].getMoves())
-                .append(" </p> </th>\n");
+                    .append(map.getMapDetail().length + 1)
+                    .append("\"> <h2> Player ")
+                    .append(String.format("%02d", playerTurn))
+                    .append(" </h2> <p> Moves: ")
+                    .append(players[playerTurn].getMoves())
+                    .append(" </p> </th>\n");
 
         for (int i = 0; i < map.getMapDetail().length + 1; i ++)
         {
@@ -256,9 +238,6 @@ public class Game
             for (int i = 0; i < amountOfPlayers; i ++)
             {
                 players[i] = new Player(map.getMapDetail().length);
-                while(!map.isTileBeingUsed(players[i].getLastPosition())){
-                    players[i].setPlayerStartPosition(new Position(rand.nextInt(mapSize),rand.nextInt(mapSize)));
-                }
             }
 
             return true;
@@ -269,7 +248,7 @@ public class Game
         }
     }
 
-    boolean isPlayerDead(int player)
+     boolean isPlayerDead(int player)
     {
         for (int aLostPlayer : lostPlayers)
         {
