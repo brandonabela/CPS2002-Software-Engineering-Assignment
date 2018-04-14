@@ -64,7 +64,9 @@ class Map
     {
         return !tileToString(mapDetail[positionToCheck.getXCoordinate()][positionToCheck.getYCoordinate()]).equals("grassTile");
     }
-
+    void changeTileType(int x,int y,TileType type){
+        mapDetail[x][y] = type;
+    }
     TileType[][] getMapDetail()
     {
         return mapDetail;

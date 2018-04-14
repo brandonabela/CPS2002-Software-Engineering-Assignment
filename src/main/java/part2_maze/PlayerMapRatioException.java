@@ -2,15 +2,9 @@ package part2_maze;
 
 class PlayerMapRatioException extends Exception
 {
-    private String message;
-
-    PlayerMapRatioException(int amountOfPlayers, int mapSize)
+    public PlayerMapRatioException()
     {
-        message = "The map size of " + mapSize + " x " + mapSize + " is not allowed for " + amountOfPlayers + " players";
+        System.out.println("Incorrect number of players to match map dimensions");
     }
 
-    String getExceptionMessage()
-    {
-        return message;
-    }
 }
