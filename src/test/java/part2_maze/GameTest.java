@@ -22,39 +22,28 @@ public class GameTest
     public ExpectedException exception = ExpectedException.none();
 
     @Test
-    public void testPlayerSet()
+    public void test_GameConstructor_PlayerSet()
     {
+
         assertEquals(2, Game.players.length);
     }
 
     @Test
-    public void testMapSet()
+    public void test_GameConstructor_MapSet()
     {
+
         assertEquals(5, Game.map.getMapDetail().length);
     }
 
     @Test
-    public void testPlayerDoesNotStartonWaterorTreasure()
-    {
-        Game.players[0].setPlayerStartPosition(new Position(0,0));
-        Game.map.changeTileType(new Position(0, 1), TileType.WATER);
-        game.setNumberOfPlayers(2, 5);
-
-        if(Game.players[0].getLastPosition().getXCoordinate() == 0 && Game.players[0].getLastPosition().getYCoordinate() == 0)
-        {
-            fail();
-        }
-    }
-
-    @Test
-    public void testPlayerSetIncorrect() throws PlayerMapRatioException
+    public void test_checkPlayerMap_PlayerSetException() throws PlayerMapRatioException
     {
         exception.expect(PlayerMapRatioException.class);
         game.checkPlayerMap(9,5);
     }
 
     @Test
-    public void testExceptionCatch()
+    public void test_GameConstructor_ExceptionCatch()
     {
         String data = "10\n5\n2\n5";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
@@ -62,14 +51,14 @@ public class GameTest
     }
 
     @Test
-    public void testMapSetIncorrect() throws PlayerMapRatioException
+    public void test_checkPlayMap_MapSetException() throws PlayerMapRatioException
     {
         exception.expect(PlayerMapRatioException.class);
         game.checkPlayerMap(5,80);
     }
 
     @Test
-    public void testPlayerMapRatioException()
+    public void test_checkPlayerMap_PlayerMapRatioException()
     {
         try
         {
@@ -82,19 +71,19 @@ public class GameTest
     }
 
     @Test
-    public void testIncorrectPlayerCount()
+    public void test_setNumberOfPlayers_IncorrectPlayerCount()
     {
         assertFalse(game.setNumberOfPlayers(10, 5));
     }
 
     @Test
-    public void testCorrectPlayerCount()
+    public void test_setNumberOfPlayers_CorrectPlayerCount()
     {
         assertTrue(game.setNumberOfPlayers(2, 5));
     }
 
     @Test
-    public void testMoreThanFivePlayersAmount()
+    public void test__checkPlayerMap_MoreThanFivePlayersAmount()
     {
         String data = "8\n20";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
@@ -104,7 +93,7 @@ public class GameTest
     }
 
     @Test
-    public void testMoreThanFivePlayersMap()
+    public void test_checkPlayerMap_MoreThanFivePlayersMap()
     {
         String data = "8\n20";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
@@ -114,26 +103,26 @@ public class GameTest
     }
 
     @Test
-    public void testHTMLString()
+    public void test_HTMLString()
     {
         assertNotEquals("", Game.htmlString());
     }
 
     @Test
-    public void testGenerateHTMLOpenFile()
+    public void test_generateHTMLFiles_OpenFile()
     {
         Game.generateHTMLFiles();
     }
 
     @Test
-    public void testPlayerDead()
+    public void test_isPlayerDead_PlayerDead()
     {
         game.lostPlayers.add(1);
         assertTrue(game.isPlayerDead(1));
     }
 
     @Test
-    public void testCurrentPlayerAfterPlayerDies()
+    public void test_switchToAlivePlayer_CurrentPlayerAfterPlayerDies()
     {
         Game.playerTurn = 1;
         game.lostPlayers.add(1);
@@ -142,13 +131,13 @@ public class GameTest
     }
 
    @Test
-   public void testPlayerNotDead()
+   public void test_isPlayerDead_PlayerNotDead()
    {
        assertFalse(game.isPlayerDead(1));
    }
 
    @Test
-   public void testAllDeadPlayer()
+   public void test_allPlayersAreDead_AllDeadPlayer()
    {
        game.lostPlayers.add(0);
        game.lostPlayers.add(1);
@@ -156,14 +145,14 @@ public class GameTest
    }
 
     @Test
-    public void testOneDeadPlayer()
+    public void test_allPlayersAreDead_OneDeadPlayer()
     {
         game.lostPlayers.add(1);
         assertFalse(game.allPlayersAreDead());
     }
 
     @Test
-    public void testPlayerSwitch()
+    public void test_switchToAlivePlayer_PlayerSwitch()
     {
         game.lostPlayers.add(1);
         game.switchToAlivePlayer();
@@ -171,7 +160,7 @@ public class GameTest
     }
 
     @Test
-    public void TestCorrectInputForMove()
+    public void Test_tryToMove_CorrectInputForMove()
     {
         Game.playerTurn = 0;
         Game.players[0].setPlayerStartPosition(new Position(0,0));
@@ -182,7 +171,7 @@ public class GameTest
     }
 
     @Test
-    public void testIncorrectMoveThenCorrect()
+    public void test_tryToMove_IncorrectMoveThenCorrect()
     {
         Game.playerTurn = 0;
         Game.players[0].setPlayerStartPosition(new Position(0,0));
@@ -193,7 +182,7 @@ public class GameTest
     }
 
     @Test
-    public void testPlayerMovingIntoWaterTile()
+    public void test_CheckMovedTile_PlayerMovingIntoWaterTile()
     {
         Game.playerTurn = 0;
         Game.players[0].setPlayerStartPosition(new Position(0,0));
@@ -206,7 +195,7 @@ public class GameTest
     }
 
     @Test
-    public void testPlayerMovingIntoTreasure()
+    public void test_CheckMovedTile_PlayerMovingIntoTreasure()
     {
         Game.playerTurn = 0;
         Game.players[0].setPlayerStartPosition(new Position(0,0));
@@ -219,14 +208,14 @@ public class GameTest
     }
 
     @Test
-    public void testStartGameWin()
+    public void test_startGame_StartGameWin()
     {
         game.playerWon = true;
         game.startGame();
     }
 
     @Test
-    public void testStartGameAllDeadPlayers()
+    public void test_startGame_AllDeadPlayers()
     {
         game.lostPlayers.add(0);
         game.lostPlayers.add(1);
@@ -235,7 +224,7 @@ public class GameTest
     }
 
     @Test
-    public void testStartGamePlayerWins()
+    public void test_StartGame_PlayerWins()
     {
         game.lostPlayers.add(1);
         Game.players[0].setPlayerStartPosition(new Position(0,0));

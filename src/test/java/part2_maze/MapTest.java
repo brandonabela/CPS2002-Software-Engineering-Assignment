@@ -15,19 +15,19 @@ public class MapTest
     }
 
     @Test
-    public void mapSize_Correct_test()
+    public void test_mapSize_Correct()
     {
         assertTrue(map.setMapSize(5, 5));
     }
 
     @Test
-    public void mapSize_Incorrect_test()
+    public void test_mapSize_Incorrect()
     {
         assertFalse(map.setMapSize(4, 5));
     }
 
     @Test
-    public void generate_map_size_test()
+    public void test_generate_map_size()
     {
         map.setMapSize(5,5);
         map.generate();
@@ -42,7 +42,7 @@ public class MapTest
     }
 
     @Test
-    public void getTileType_SingleTile_Correct_test()
+    public void test_getTileType_SingleTile_Correct()
     {
         map.setMapSize(5,5);
         map.generate();
@@ -55,7 +55,7 @@ public class MapTest
     }
 
     @Test
-    public void getTileType_SingleTile_Incorrect_test()
+    public void test_getTileType_SingleTileIncorrect()
     {
         map.setMapSize(5,5);
         map.generate();
@@ -64,25 +64,25 @@ public class MapTest
     }
 
     @Test
-    public void getTileToString_Grass_test()
+    public void test_getTileToString_Grass()
     {
         assertEquals("grassTile",map.tileToString(TileType.GRASS));
     }
 
     @Test
-    public void getTileToString_Water_test()
+    public void test_getTileToString_Water()
     {
         assertEquals("waterTile", map.tileToString(TileType.WATER));
     }
 
     @Test
-    public void getTileToString_Treasure_test()
+    public void test_getTileToString_Treasure()
     {
         assertEquals("treasureTile", map.tileToString(TileType.TREASURE));
     }
 
     @Test
-    public void getTileToString_Error_test()
+    public void test_getTileToString_Error()
     {
         assertEquals("unknownTile", map.tileToString(TileType.ERROR));
     }
