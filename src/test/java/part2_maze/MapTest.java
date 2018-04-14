@@ -15,19 +15,19 @@ public class MapTest
     }
 
     @Test
-    public void MapSize_Correct_test()
+    public void mapSize_Correct_test()
     {
         assertTrue(map.setMapSize(5, 5));
     }
 
     @Test
-    public void MapSize_Incorrect_test()
+    public void mapSize_Incorrect_test()
     {
         assertFalse(map.setMapSize(4, 5));
     }
 
     @Test
-    public void Generate_map_size_test()
+    public void generate_map_size_test()
     {
         map.setMapSize(5,5);
         map.generate();
@@ -39,11 +39,10 @@ public class MapTest
         {
             assertEquals(5, aGame_map.length);
         }
-
     }
 
     @Test
-    public void GetTileType_SingleTile_Correct_test()
+    public void getTileType_SingleTile_Correct_test()
     {
         map.setMapSize(5,5);
         map.generate();
@@ -56,7 +55,7 @@ public class MapTest
     }
 
     @Test
-    public void GetTileType_SingleTile_Incorrect_test()
+    public void getTileType_SingleTile_Incorrect_test()
     {
         map.setMapSize(5,5);
         map.generate();
@@ -65,13 +64,13 @@ public class MapTest
     }
 
     @Test
-    public void GetTileToString_Grass_test()
+    public void getTileToString_Grass_test()
     {
         assertEquals("grassTile",map.tileToString(TileType.GRASS));
     }
 
     @Test
-    public void GetTileToString_Water_test()
+    public void getTileToString_Water_test()
     {
         assertEquals("waterTile", map.tileToString(TileType.WATER));
     }
