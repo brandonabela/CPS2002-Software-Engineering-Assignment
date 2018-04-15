@@ -3,21 +3,36 @@ package part2_maze;
 import java.util.Random;
 import java.util.ArrayList;
 
+/**
+ * Class which is responsible for defining a player object which represent a user within a game
+ */
 class Player
 {
-    private StringBuilder moves;
-    private ArrayList<Position> movedPositions;
+    private StringBuilder moveDirections;       // The directions which the player have moved
+    private ArrayList<Position> movedPositions; // The positions the player has visited
 
+    /**
+     * Constructor which is responsible for defining the player
+     *
+     * @param mapSize the size of the map which the player will be randomly placed within the map
+     */
     Player(int mapSize)
     {
         Random random = new Random();
 
-        moves = new StringBuilder();
+        moveDirections = new StringBuilder();
         movedPositions = new ArrayList<Position>();
 
         setPlayerStartPosition(new Position (random.nextInt(mapSize), random.nextInt(mapSize)));
     }
 
+    /**
+     * Responsible for moving the player in the map
+     *
+     * @param moveDirection the direction which the player would like to move
+     * @param map the map which the player will move on
+     * @return true if the player successfully moved / false if the player made incorrect move
+     */
     boolean move(char moveDirection, Map map)
     {
         Position playerPosition = movedPositions.get(movedPositions.size() - 1);
@@ -26,8 +41,8 @@ class Player
         {
             case 'U':
             {
-                if (moves.length() > 1) {   moves.append(", ");  }
-                moves.append("Up");
+                if (moveDirections.length() > 1) {   moveDirections.append(", ");  }
+                moveDirections.append("Up");
 
                 if(0 <= playerPosition.getYCoordinate() - 1)
                 {
@@ -43,8 +58,8 @@ class Player
 
             case 'L':
             {
-                if (moves.length() > 1) {   moves.append(", ");  }
-                moves.append("Left");
+                if (moveDirections.length() > 1) {   moveDirections.append(", ");  }
+                moveDirections.append("Left");
 
                 if (0 <= playerPosition.getXCoordinate() - 1)
                 {
@@ -60,8 +75,8 @@ class Player
 
             case 'D':
             {
-                if (moves.length() > 1) {   moves.append(", ");  }
-                moves.append("Down");
+                if (moveDirections.length() > 1) {   moveDirections.append(", ");  }
+                moveDirections.append("Down");
 
                 if (playerPosition.getYCoordinate() + 1 < map.getMapDetail().length)
                 {
@@ -77,8 +92,8 @@ class Player
 
             case 'R':
             {
-                if (moves.length() >= 1) {   moves.append(", ");  }
-                moves.append("Right");
+                if (moveDirections.length() >= 1) {   moveDirections.append(", ");  }
+                moveDirections.append("Right");
 
                 if(playerPosition.getXCoordinate() + 1 < map.getMapDetail()[0].length)
                 {
@@ -99,6 +114,12 @@ class Player
         }
     }
 
+    /**
+     * Responsible for determining if the given coordinate was visited by the player
+     *
+     * @param positionToCheck the position which is going to be check
+     * @return true if the position was visited / false if the position was not visited by the player
+     */
     boolean isInMovedList(Position positionToCheck)
     {
         for (Position movedPosition : movedPositions)
@@ -113,6 +134,13 @@ class Player
         return false;
     }
 
+    /**
+     * Sets the start position as the first visited position
+     * if movedPosition is not empty set the first position to be the start position
+     * if movedPosition is empty add the start position to the list
+     *
+     * @param startPosition the start position of the player
+     */
     void setPlayerStartPosition(Position startPosition)
     {
         if (movedPositions.size() != 0)
@@ -125,6 +153,8 @@ class Player
         }
     }
 
+    // Get Methods
+
     ArrayList<Position> getMovedPositions()
     {
         return movedPositions;
@@ -135,8 +165,8 @@ class Player
         return movedPositions.get(movedPositions.size() - 1);
     }
 
-    String getMoves()
+    String getMoveDirections()
     {
-        return moves.toString();
+        return moveDirections.toString();
     }
 }
