@@ -106,7 +106,7 @@ public class PlayerTest
     {
         player.move('U', map);
 
-        Assert.assertEquals("Up", player.getMoves());
+        Assert.assertEquals("Up", player.getMoveDirections());
     }
 
     @Test

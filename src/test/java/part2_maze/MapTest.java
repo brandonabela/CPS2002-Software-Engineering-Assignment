@@ -46,7 +46,7 @@ public class MapTest
     {
         map.setMapSize(5,5);
         map.generate();
-        TileType tileType = map.getTileType(0,0);
+        TileType tileType = map.getTileType(new Position(0,0));
 
         if(tileType == TileType.ERROR)
         {
@@ -59,7 +59,7 @@ public class MapTest
     {
         map.setMapSize(5,5);
         map.generate();
-        TileType tileType = map.getTileType(0,6);
+        TileType tileType = map.getTileType(new Position(0,6));
         assertEquals(TileType.ERROR,tileType);
     }
 
