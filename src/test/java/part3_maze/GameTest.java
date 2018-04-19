@@ -1,4 +1,4 @@
-package part2_maze;
+package part3_maze;
 
 import org.junit.*;
 import org.junit.rules.ExpectedException;

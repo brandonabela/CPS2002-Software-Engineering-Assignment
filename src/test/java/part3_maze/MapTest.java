@@ -1,4 +1,4 @@
-package part2_maze;
+package part3_maze;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

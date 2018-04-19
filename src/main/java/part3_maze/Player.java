@@ -1,4 +1,4 @@
-package part2_maze;
+package part3_maze;
 
 import java.util.Random;
 import java.util.ArrayList;

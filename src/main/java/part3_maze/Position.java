@@ -1,4 +1,4 @@
-package part2_maze;
+package part3_maze;
 
 /**
  * Class which is responsible for defining the positions within the game

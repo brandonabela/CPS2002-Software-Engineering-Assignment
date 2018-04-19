@@ -1,4 +1,4 @@
-package part2_maze;
+package part3_maze;
 
 /**
  * A class which is responsible for defining a custom exception to be called every time the player inputs an
