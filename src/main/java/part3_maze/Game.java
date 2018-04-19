@@ -31,7 +31,7 @@ public class Game
      */
     Game()
     {
-        map = new Map();
+        map = Map.getMapInstance(); // Obtaining a static reference to the map class
 
         Scanner scanner = new Scanner(System.in);
         lostPlayers = new ArrayList<Integer>();

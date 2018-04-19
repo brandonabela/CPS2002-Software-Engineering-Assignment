@@ -8,13 +8,13 @@ import static org.junit.Assert.*;
 
 public class PlayerTest
 {
-    private Map map;
+    private static Map map;
     private Player player;
 
     @Before
     public void Setup()
     {
-        map = new Map();
+        map = Map.getMapInstance();
         map.setMapSize(10, 10);
         map.generate();
 

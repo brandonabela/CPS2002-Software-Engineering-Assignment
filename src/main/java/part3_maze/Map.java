@@ -6,13 +6,19 @@ import java.util.Random;
  * Class used to generate and maintain a map in the class Game.
  *
  *
- * Total Amount of Methods: 8
- * Total Amount of Variables: 2
+ * Total Amount of Methods: 9
+ * Total Amount of Variables: 3
  */
 class Map
 {
     private int sizeOfMap; // Stores the size of the map
     private TileType[][] mapDetail; // Stores the actual map
+    private static Map mapInstance = new Map(); // Stores a single instance of the actual map
+
+    /**
+     * Creating a default Empty Constructor
+     */
+    private Map()   {   }
 
     /**
      * Checks map dimensions requested by the user.
@@ -90,6 +96,11 @@ class Map
     }
 
     // Get Method for Map Detail
+    static Map getMapInstance()
+    {
+        return mapInstance;
+    }
+
     TileType[][] getMapDetail()
     {
         return mapDetail;
