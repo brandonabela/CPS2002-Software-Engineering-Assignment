@@ -2,6 +2,7 @@ package part3_maze;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -20,6 +21,9 @@ public class Game
     static int playerTurn;          // The index of which player is going to play
     static Player[] players;        // An array which stores all the players within the game
     ArrayList<Integer> lostPlayers; // An array of integers which stores all the players who lost the game
+    static ArrayList<Team> teams;
+    int totalPlayers;
+    Scanner scanner;
 
     /**
      * Game constructor.
@@ -33,31 +37,143 @@ public class Game
     {
         map = Map.getMapInstance(); // Obtaining a static reference to the map class
 
-        Scanner scanner = new Scanner(System.in);
+        scanner = new Scanner(System.in);
         lostPlayers = new ArrayList<Integer>();
-
+        teams = new ArrayList<Team>();
         boolean validInput = false;
+        int amountOfPlayersInput = 0;
+        while (!validInput)
+        {
 
+                System.out.println("Please choose the Game mode");
+                System.out.println("1) Solo Mode");
+                System.out.println("2) Team Mode");
+                amountOfPlayersInput = scanner.nextInt();
+                if(amountOfPlayersInput != 1 && amountOfPlayersInput != 2)
+                    System.out.println("Please enter a valid option");
+                else
+                    validInput = true;
+        }
+        totalPlayers = 0;
+        switch (amountOfPlayersInput){
+            case 1: soloMode();
+            break;
+            case 2: collaborationMode();
+            break;
+        }
+
+        playerWon = false;
+
+
+    }
+    void soloMode(){
+        boolean validInput = false;
+        int amountOfPlayersInput = 0;
+        int mapSizeInput;
         while (!validInput)
         {
             try
             {
                 System.out.println("Please enter the number of players");
-                int amountOfPlayersInput = scanner.nextInt();
+                amountOfPlayersInput = scanner.nextInt();
 
                 System.out.println("Please enter the dimension size of the map");
-                int mapSizeInput = scanner.nextInt();
+                mapSizeInput = scanner.nextInt();
 
                 checkPlayerMap(amountOfPlayersInput, mapSizeInput);
                 validInput = true;
+
             }
             catch (PlayerMapRatioException playerMapRatioException)
             {
                 System.out.println(playerMapRatioException.getMessage());
             }
         }
+        totalPlayers = amountOfPlayersInput;
+        for (int i = 0; i < amountOfPlayersInput; i++) {
 
-        playerWon = false;
+            teams.add(new Team(1,map,new int[]{i}));
+        }
+
+    }
+    void collaborationMode(){
+        boolean validInput = false;
+        int amountOfPlayersInput = 0;
+        int mapSizeInput;
+        int teamLimitInput = 0;
+        while (!validInput)
+        {
+            try
+            {
+                System.out.println("Please enter the number of players");
+                amountOfPlayersInput = scanner.nextInt();
+
+                System.out.println("Please enter the number of players per team");
+                teamLimitInput = scanner.nextInt();
+
+                System.out.println("Please enter the dimension size of the map");
+                mapSizeInput = scanner.nextInt();
+
+                if(checkValidteamToPlayerRation(amountOfPlayersInput,teamLimitInput)){
+                    checkPlayerMap(amountOfPlayersInput, mapSizeInput);
+                    validInput = true;
+                }else
+                    System.out.println("Incorrect Player to team ratio");
+            }
+            catch (PlayerMapRatioException playerMapRatioException)
+            {
+                System.out.println(playerMapRatioException.getMessage());
+            }
+        }
+        totalPlayers = amountOfPlayersInput;
+        createTeams(amountOfPlayersInput,teamLimitInput);
+    }
+
+    void createTeams(int playerAmount,int numOfTeams){
+        ArrayList<Integer> uniquePlayers = new ArrayList<Integer>();
+        for (int i = 0; i < playerAmount; i++) {
+            uniquePlayers.add(i);
+        }
+
+        if(playerAmount%numOfTeams != 0){
+            int temp = playerAmount;
+            int team_size;
+
+            for (int i = 0; i < numOfTeams; i++) {
+                if(i == numOfTeams-1){
+                    create_team(temp,uniquePlayers);
+                }else{
+                    team_size = (int) Math.ceil(temp/numOfTeams) +1;
+                    temp-=team_size;
+                    create_team(team_size,uniquePlayers);
+                }
+            }
+        }else{
+            for (int i = 0; i < numOfTeams; i++) {
+              create_team(playerAmount/numOfTeams,uniquePlayers);
+            }
+
+        }
+    }
+
+    boolean checkValidteamToPlayerRation(int amountOfPlayer, int teamSize){
+        return amountOfPlayer / teamSize != 0;
+    }
+    void create_team(int teamSize,ArrayList<Integer> unUsedPlayers){
+        Random rand = new Random();
+        int[] teamPlayers = new int[teamSize];
+
+        for (int i = 0; i < teamSize; i++) {
+            int player = unUsedPlayers.get(rand.nextInt(unUsedPlayers.size()));
+            teamPlayers[i] = player;
+            for (int j = 0; j < unUsedPlayers.size(); j++) {
+                if(unUsedPlayers.get(j) == player){
+                    unUsedPlayers.remove(j);
+                }
+            }
+        }
+         teams.add(new Team(teamSize,map,teamPlayers)) ;
+
     }
 
     /**
@@ -100,7 +216,7 @@ public class Game
      */
     boolean allPlayersAreDead()
     {
-        if(lostPlayers.size() == players.length)
+        if(lostPlayers.size() == totalPlayers)
         {
             System.out.println("All players are dead");
             return true;
@@ -118,7 +234,7 @@ public class Game
     {
         while(isPlayerDead (playerTurn))
         {
-            if((playerTurn += 1) >= players.length)    {   playerTurn = 0; }
+            if((playerTurn += 1) >= totalPlayers)    {   playerTurn = 0; }
         }
     }
 
@@ -131,7 +247,7 @@ public class Game
     void startGame()
     {
         Random rand = new Random();
-        playerTurn = rand.nextInt(players.length);
+        playerTurn = rand.nextInt(totalPlayers);
 
         while (!playerWon)
         {
@@ -162,7 +278,7 @@ public class Game
         {
             char moveDirection = scanner.next().charAt(0);
 
-            if(!players[playerTurn].move(moveDirection, map))
+            if(!currentPlayer().move(moveDirection, map))
             {
                 System.out.println("Try again and make sure 'U' or 'L' or 'D' or 'R' are inputted and are within the map");
             }
@@ -174,10 +290,18 @@ public class Game
         } while (!validInput);
 
         System.out.println("Successfully moved from " +
-                            players[playerTurn].getMovedPositions().get(players[playerTurn].getMovedPositions().size() - 2) + " to " +
-                            players[playerTurn].getMovedPositions().get(players[playerTurn].getMovedPositions().size() - 1));
+                currentPlayer().getMovedPositions().get(currentPlayer().getMovedPositions().size() - 2) + " to " +
+                currentPlayer().getMovedPositions().get(currentPlayer().getMovedPositions().size() - 1));
     }
-
+    static Player currentPlayer(){
+        for (Team team : teams) {
+            for (Player player : team.players) {
+                if(player.playerID == playerTurn)
+                    return player;
+            }
+        }
+        return null;
+    }
     /**
      * Checks the tile that a user moves into.
      * if the tile is water the user dies.
@@ -187,7 +311,7 @@ public class Game
      */
     void CheckMovedTile()
     {
-        Position lastPlayerPosition = players[playerTurn].getLastPosition();
+        Position lastPlayerPosition = currentPlayer().getLastPosition();
 
         switch (map.getTileType(new Position(lastPlayerPosition.getXCoordinate(), lastPlayerPosition.getYCoordinate())))
         {
@@ -264,7 +388,7 @@ public class Game
                     .append("\"> <h2> Player ")
                     .append(String.format("%02d", playerTurn))
                     .append(" </h2> <p> Moves: ")
-                    .append(players[playerTurn].getMoveDirections())
+                    .append(currentPlayer().getMoveDirections())
                     .append(" </p> </th>\n");
 
         for (int i = 0; i < map.getMapDetail().length + 1; i ++)
@@ -280,12 +404,12 @@ public class Game
                 {
                     htmlString.append("        <th class=\"");
 
-                    if (players[playerTurn].isInMovedList(new Position(j - 1, i - 1)))
+                    if (currentPlayer().isInMovedList(new Position(j - 1, i - 1)))
                     {
                         htmlString.append(map.tileToString(map.getTileType(new Position(j - 1, i - 1)))).append("\">");
 
-                        if (players[playerTurn].getMovedPositions().get(players[playerTurn].getMovedPositions().size() - 1).getYCoordinate() == i - 1 &&
-                                players[playerTurn].getMovedPositions().get(players[playerTurn].getMovedPositions().size() - 1).getXCoordinate() == j - 1)
+                        if (currentPlayer().getMovedPositions().get(currentPlayer().getMovedPositions().size() - 1).getYCoordinate() == i - 1 &&
+                                currentPlayer().getMovedPositions().get(currentPlayer().getMovedPositions().size() - 1).getXCoordinate() == j - 1)
                         {
                             htmlString.append("<i class=\"glyphicon glyphicon-user\"></i>");
                         }
@@ -325,7 +449,7 @@ public class Game
         {
             for (int i = 0; i < amountOfPlayers; i ++)
             {
-                players[i] = new Player(mapSize);
+                players[i] = new Player(mapSize,1);
 
                 while(!map.isTileNotUsed(players[i].getLastPosition()))
                 {

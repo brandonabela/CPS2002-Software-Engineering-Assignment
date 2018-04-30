@@ -18,7 +18,7 @@ public class PlayerTest
         map.setMapSize(10, 10);
         map.generate();
 
-        player = new Player(2);
+        player = new Player(2,1);
     }
 
     @Test

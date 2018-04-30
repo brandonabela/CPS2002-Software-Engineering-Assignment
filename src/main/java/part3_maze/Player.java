@@ -10,13 +10,13 @@ class Player
 {
     private StringBuilder moveDirections;       // The directions which the player have moved
     private ArrayList<Position> movedPositions; // The positions the player has visited
-
+    int playerID;
     /**
      * Constructor which is responsible for defining the player
      *
      * @param mapSize the size of the map which the player will be randomly placed within the map
      */
-    Player(int mapSize)
+    Player(int mapSize,int playerID)
     {
         Random random = new Random();
 
@@ -24,6 +24,7 @@ class Player
         movedPositions = new ArrayList<Position>();
 
         setPlayerStartPosition(new Position (random.nextInt(mapSize), random.nextInt(mapSize)));
+        this.playerID = playerID;
     }
 
     /**
