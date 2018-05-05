@@ -258,7 +258,7 @@ public class Game
             tryToMove();
             CheckMovedTile();
 
-            if((playerTurn += 1) >= players.length - 1)    {   playerTurn = 0; }
+            if((playerTurn += 1) >= totalPlayers - 1)    {   playerTurn = 0; }
         }
     }
 
