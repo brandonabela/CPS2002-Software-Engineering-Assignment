@@ -92,9 +92,9 @@ public class Game
         totalPlayers = amountOfPlayersInput;
         generatedMap = gameMapCreator.generateGameMap(GameMapCreator.MapType.MAP_SAFE, mapSizeInput, mapSizeInput);
 
-        for (int i = 0; i < amountOfPlayersInput; i++)
+        for (int i = 0; i < amountOfPlayersInput; i ++)
         {
-            teams.add(new Team(1, new int[]{i}));
+            teams.add(new Team(1, generatedMap, new int[]{i}));
         }
     }
 
@@ -194,7 +194,7 @@ public class Game
             }
         }
 
-        teams.add(new Team(teamSize, teamPlayers));
+        teams.add(new Team(teamSize, generatedMap, teamPlayers));
     }
 
     /**
@@ -310,8 +310,8 @@ public class Game
         } while (!validInput);
 
         System.out.println("Successfully moved from " +
-                currentPlayer().getMovedPositions().get(currentPlayer().getMovedPositions().size() - 2) + " to " +
-                currentPlayer().getMovedPositions().get(currentPlayer().getMovedPositions().size() - 1));
+                                currentPlayer().getMovedPositions().get(currentPlayer().getMovedPositions().size() - 2) + " to " +
+                                currentPlayer().getMovedPositions().get(currentPlayer().getMovedPositions().size() - 1));
     }
 
     static Player currentPlayer()
@@ -341,7 +341,7 @@ public class Game
     {
         Position lastPlayerPosition = currentPlayer().getLastPosition();
 
-        switch (GameMap.getMapInstance().getTileType(new Position(lastPlayerPosition.getXCoordinate(), lastPlayerPosition.getYCoordinate())))
+        switch (generatedMap.getTileType(new Position(lastPlayerPosition.getXCoordinate(), lastPlayerPosition.getYCoordinate())))
         {
             case WATER :
             {

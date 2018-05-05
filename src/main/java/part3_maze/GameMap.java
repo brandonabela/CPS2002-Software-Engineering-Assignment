@@ -1,6 +1,6 @@
 package part3_maze;
 
-public abstract class GameMap extends GameMapCreator
+public abstract class GameMap
 {
     protected String gameMapName = null; // Stores the name of the map
 
