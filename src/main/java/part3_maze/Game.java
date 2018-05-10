@@ -66,8 +66,10 @@ public class Game
     private void soloMode()
     {
         int mapSizeInput = 1;
-        boolean validInput = false;
         int amountOfPlayersInput = 0;
+        int mapChoice = 0;
+
+        boolean validInput = false;
         Scanner scanner = new Scanner(System.in);
 
         while (!validInput)
@@ -90,7 +92,7 @@ public class Game
         }
 
         totalPlayers = amountOfPlayersInput;
-        generatedMap = gameMapCreator.generateGameMap(GameMapCreator.MapType.MAP_SAFE, mapSizeInput, mapSizeInput);
+        inputMapChoice(mapSizeInput, mapChoice, scanner);
 
         for (int i = 0; i < amountOfPlayersInput; i ++)
         {
@@ -100,9 +102,11 @@ public class Game
 
     private void collaborationMode()
     {
-        int mapSizeInput;
+        int mapSizeInput = 1;
         int teamLimitInput = 0;
         int amountOfPlayersInput = 0;
+        int mapChoice = 0;
+
         boolean validInput = false;
         Scanner scanner = new Scanner(System.in);
 
@@ -137,6 +141,25 @@ public class Game
 
         totalPlayers = amountOfPlayersInput;
         createTeams(amountOfPlayersInput, teamLimitInput);
+        inputMapChoice(mapSizeInput, mapChoice, scanner);
+    }
+
+    private void inputMapChoice(int mapSizeInput, int mapChoice, Scanner scanner)
+    {
+        while (mapChoice != 1 && mapChoice != 2)
+        {
+            System.out.println("Please input 1 for Safe Map and 2 for Hazardous Map");
+            mapChoice = scanner.nextInt();
+
+            if (mapChoice == 1)
+            {
+                generatedMap = gameMapCreator.generateGameMap(GameMapCreator.MapType.MAP_SAFE, mapSizeInput, mapSizeInput);
+            }
+            else if (mapChoice == 2)
+            {
+                generatedMap = gameMapCreator.generateGameMap(GameMapCreator.MapType.MAP_HAZARDOUS, mapSizeInput, mapSizeInput);
+            }
+        }
     }
 
     private void createTeams(int playerAmount, int teamAmount)

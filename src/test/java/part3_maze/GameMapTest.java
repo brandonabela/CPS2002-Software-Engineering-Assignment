@@ -4,34 +4,34 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class MapTest
+public class GameMapTest
 {
-    private static Map map;
+    private static GameMap gameMap;
 
     @Before
     public void setup()
     {
-        map = Map.getMapInstance();
+        gameMap = GameMap.getMapInstance();
     }
 
     @Test
     public void test_mapSize_Correct()
     {
-        assertTrue(map.setMapSize(5, 5));
+        assertTrue(gameMap.setMapSize(5, 5));
     }
 
     @Test
     public void test_mapSize_Incorrect()
     {
-        assertFalse(map.setMapSize(4, 5));
+        assertFalse(gameMap.setMapSize(4, 5));
     }
 
     @Test
     public void test_generate_map_size()
     {
-        map.setMapSize(5,5);
-        map.generate();
-        TileType[][] game_map = map.getMapDetail();
+        gameMap.setMapSize(5,5);
+        gameMap.generate();
+        TileType[][] game_map = gameMap.getMapDetail();
 
         assertEquals(5,game_map.length);
 
@@ -44,9 +44,9 @@ public class MapTest
     @Test
     public void test_getTileType_SingleTile_Correct()
     {
-        map.setMapSize(5,5);
-        map.generate();
-        TileType tileType = map.getTileType(new Position(0,0));
+        gameMap.setMapSize(5,5);
+        gameMap.generate();
+        TileType tileType = gameMap.getTileType(new Position(0,0));
 
         if(tileType == TileType.ERROR)
         {
@@ -57,39 +57,39 @@ public class MapTest
     @Test
     public void test_getTileType_SingleTileIncorrect()
     {
-        map.setMapSize(5,5);
-        map.generate();
-        TileType tileType = map.getTileType(new Position(0,6));
+        gameMap.setMapSize(5,5);
+        gameMap.generate();
+        TileType tileType = gameMap.getTileType(new Position(0,6));
         assertEquals(TileType.ERROR,tileType);
     }
 
     @Test
     public void test_getTileToString_Grass()
     {
-        assertEquals("grassTile",map.tileToString(TileType.GRASS));
+        assertEquals("grassTile", gameMap.tileToString(TileType.GRASS));
     }
 
     @Test
     public void test_getTileToString_Water()
     {
-        assertEquals("waterTile", map.tileToString(TileType.WATER));
+        assertEquals("waterTile", gameMap.tileToString(TileType.WATER));
     }
 
     @Test
     public void test_getTileToString_Treasure()
     {
-        assertEquals("treasureTile", map.tileToString(TileType.TREASURE));
+        assertEquals("treasureTile", gameMap.tileToString(TileType.TREASURE));
     }
 
     @Test
     public void test_getTileToString_Error()
     {
-        assertEquals("unknownTile", map.tileToString(TileType.ERROR));
+        assertEquals("unknownTile", gameMap.tileToString(TileType.ERROR));
     }
 
     @After
     public void cleanup()
     {
-        map = null;
+        gameMap = null;
     }
 }
