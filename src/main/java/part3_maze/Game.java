@@ -19,10 +19,11 @@ public class Game
     static GameMap generatedMap;                   // Stores the created map for the team or players
     boolean playerWon;                      // Boolean to determine if a player has won the game
     static int playerTurn;                  // The index of which player is going to play
-    static Player[] players;                // An array which stores all the players within the game
+    //static Player[] players; NO LONGER USING THIS               // An array which stores all the players within the game
     ArrayList<Integer> lostPlayers;         // An array of integers which stores all the players who lost the game
     static ArrayList<Team> teams;
     private int totalPlayers;
+    Scanner scanner;
 
     /**
      * Game constructor.
@@ -36,7 +37,7 @@ public class Game
     {
         gameMapCreator = new GameMapCreator(); // Creating a Game Map Creator
 
-        Scanner scanner = new Scanner(System.in);
+        scanner = new Scanner(System.in);
         lostPlayers = new ArrayList<Integer>();
         teams = new ArrayList<Team>();
         boolean validInput = false;
@@ -70,7 +71,7 @@ public class Game
         int mapChoice = 0;
 
         boolean validInput = false;
-        Scanner scanner = new Scanner(System.in);
+
 
         while (!validInput)
         {
@@ -92,7 +93,7 @@ public class Game
         }
 
         totalPlayers = amountOfPlayersInput;
-        inputMapChoice(mapSizeInput, mapChoice, scanner);
+        inputMapChoice(mapSizeInput, mapChoice);
 
         for (int i = 0; i < amountOfPlayersInput; i ++)
         {
@@ -108,7 +109,7 @@ public class Game
         int mapChoice = 0;
 
         boolean validInput = false;
-        Scanner scanner = new Scanner(System.in);
+
 
         while (!validInput)
         {
@@ -140,11 +141,12 @@ public class Game
         }
 
         totalPlayers = amountOfPlayersInput;
+        inputMapChoice(mapSizeInput, mapChoice);
         createTeams(amountOfPlayersInput, teamLimitInput);
-        inputMapChoice(mapSizeInput, mapChoice, scanner);
+
     }
 
-    private void inputMapChoice(int mapSizeInput, int mapChoice, Scanner scanner)
+    private void inputMapChoice(int mapSizeInput, int mapChoice)
     {
         while (mapChoice != 1 && mapChoice != 2)
         {
@@ -153,11 +155,17 @@ public class Game
 
             if (mapChoice == 1)
             {
-                generatedMap = gameMapCreator.generateGameMap(GameMapCreator.MapType.MAP_SAFE, mapSizeInput, mapSizeInput);
+                gameMapCreator.generateGameMap(GameMapCreator.MapType.MAP_SAFE, mapSizeInput, mapSizeInput);
+                generatedMap = GameMap.getMapInstance();
             }
             else if (mapChoice == 2)
             {
-                generatedMap = gameMapCreator.generateGameMap(GameMapCreator.MapType.MAP_HAZARDOUS, mapSizeInput, mapSizeInput);
+                gameMapCreator.generateGameMap(GameMapCreator.MapType.MAP_HAZARDOUS, mapSizeInput, mapSizeInput);
+                generatedMap = GameMap.getMapInstance();
+                System.out.println();
+            }else
+            {
+                System.out.println("Please enter a correct choice.");
             }
         }
     }
@@ -245,9 +253,8 @@ public class Game
             throw new PlayerMapRatioException(amountOfPlayers, mapSize);
         }
 
-        generatedMap = gameMapCreator.generateGameMap(GameMapCreator.MapType.MAP_SAFE, mapSize, mapSize);
 
-        setNumberOfPlayers(amountOfPlayers, mapSize);
+        //setNumberOfPlayers(amountOfPlayers, mapSize); NO LONGER USING THIS
     }
 
     /**
@@ -298,10 +305,11 @@ public class Game
             if(allPlayersAreDead())   {   break;    }
 
             switchToAlivePlayer();
+            generateHTMLFiles();
             tryToMove();
             CheckMovedTile();
 
-            if((playerTurn += 1) >= totalPlayers - 1)    {   playerTurn = 0; }
+            if((playerTurn += 1) >= totalPlayers)    {   playerTurn = 0; }
         }
     }
 
@@ -400,10 +408,7 @@ public class Game
 
             bufferedWriter.close();
         }
-        catch (IOException exception)
-        {
-            exception.printStackTrace();
-        }
+        catch (IOException exception) { exception.printStackTrace();}
     }
 
     /**
@@ -481,7 +486,7 @@ public class Game
 
         return htmlString.toString();
     }
-
+    //NO LONGER USING THIS
     /**
      * Gives the players starting positions which are non water tiles and non treasure tiles
      *
@@ -491,30 +496,30 @@ public class Game
      * @param mapSize the size of the map
      * @return true for correct amount of player / false for incorrect amount of players
      */
-    private boolean setNumberOfPlayers(int amountOfPlayers, int mapSize)
-    {
-        Random rand = new Random();
-        players = new Player[amountOfPlayers];
-
-        if(2 <= amountOfPlayers && amountOfPlayers <= 8)
-        {
-            for (int i = 0; i < amountOfPlayers; i ++)
-            {
-                players[i] = new Player(mapSize,1);
-
-                while(!generatedMap.isTileNotUsed(players[i].getLastPosition()))
-                {
-                    players[i].setPlayerStartPosition(new Position(rand.nextInt(mapSize), rand.nextInt(mapSize)));
-                }
-            }
-
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
+//    private boolean setNumberOfPlayers(int amountOfPlayers, int mapSize)
+//    {
+//        Random rand = new Random();
+//        players = new Player[amountOfPlayers];
+//
+//        if(2 <= amountOfPlayers && amountOfPlayers <= 8)
+//        {
+//            for (int i = 0; i < amountOfPlayers; i ++)
+//            {
+//                players[i] = new Player(mapSize,1);
+//
+//                while(!generatedMap.isTileNotUsed(players[i].getLastPosition()))
+//                {
+//                    players[i].setPlayerStartPosition(new Position(rand.nextInt(mapSize), rand.nextInt(mapSize)));
+//                }
+//            }
+//
+//            return true;
+//        }
+//        else
+//        {
+//            return false;
+//        }
+//    }
 
     /**
      * Checks if a player is dead.

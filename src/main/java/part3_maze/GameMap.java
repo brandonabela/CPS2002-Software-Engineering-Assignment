@@ -1,5 +1,7 @@
 package part3_maze;
 
+import java.util.Random;
+
 public abstract class GameMap
 {
     protected String gameMapName = null; // Stores the name of the map
@@ -33,6 +35,10 @@ public abstract class GameMap
     static GameMap getMapInstance()
     {
         return mapInstance;
+    }
+    // Reset Static Instance needed in testing
+    static void reset(){
+        mapInstance = null;
     }
 
     TileType[][] getMapDetail()
@@ -70,6 +76,40 @@ public abstract class GameMap
         {
             return TileType.ERROR;
         }
+    }
+    // To cater for future map types since the difference will only be the amount of water tiles
+    // had to change the way creation works to have the required tile amount
+    protected void createMap(int maxWaterTiles){
+        mapDetail = new TileType[sizeOfMap][sizeOfMap];
+        Random random = new Random();
+        for (int i = 0; i < mapDetail.length; i ++)
+        {
+            for (int j = 0; j < mapDetail[0].length; j ++)
+            {
+                mapDetail[i][j] = TileType.GRASS;
+            }
+        }
+        Position randomPosition = new Position(0, 0);
+        int waterCount = 0;
+        int total = 0; //total tiles covered
+        randomPosition.setXCoordinate(random.nextInt(sizeOfMap));
+        randomPosition.setYCoordinate(random.nextInt(sizeOfMap));
+        while (total < (sizeOfMap*sizeOfMap))
+        {
+            while (mapDetail[randomPosition.getXCoordinate()][randomPosition.getYCoordinate()] == TileType.WATER){
+                randomPosition.setXCoordinate(random.nextInt(sizeOfMap));
+                randomPosition.setYCoordinate(random.nextInt(sizeOfMap));
+            }
+            if (waterCount <= maxWaterTiles)
+            {
+                mapDetail[randomPosition.getXCoordinate()][randomPosition.getYCoordinate()] = TileType.WATER;
+                waterCount+=1;
+            }else
+                break;
+
+            total+=1;
+        }
+        mapDetail[random.nextInt(sizeOfMap)][random.nextInt(sizeOfMap)] = TileType.TREASURE;
     }
 
     /**
@@ -112,4 +152,5 @@ public abstract class GameMap
             default         :   return "unknownTile";
         }
     }
+
 }

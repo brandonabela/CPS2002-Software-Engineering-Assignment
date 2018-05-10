@@ -5,17 +5,18 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static part3_maze.GameMapCreator.MapType.MAP_HAZARDOUS;
 
 public class PlayerTest
 {
     private static GameMap generatedMap;
+    private GameMapCreator gameMapCreator;
     private Player player;
 
     @Before
     public void Setup()
     {
-        GameMapCreator gameMapCreator = new GameMapCreator();
-        generatedMap = gameMapCreator.generateGameMap(GameMapCreator.MapType.MAP_SAFE, 10, 10);
+        gameMapCreator = new GameMapCreator();
 
         player = new Player(2,1);
     }
@@ -23,6 +24,8 @@ public class PlayerTest
     @Test
     public void testMoveUp()
     {
+        gameMapCreator.generateGameMap(MAP_HAZARDOUS,2,2);
+        generatedMap = GameMap.getMapInstance();
         player.setPlayerStartPosition(new Position(2, 2));
         player.move('U', generatedMap);
 
@@ -32,6 +35,9 @@ public class PlayerTest
     @Test
     public void testMoveUpException()
     {
+        gameMapCreator.generateGameMap(MAP_HAZARDOUS,2,2);
+        generatedMap = GameMap.getMapInstance();
+
         player.setPlayerStartPosition(new Position(10, 10));
 
         Assert.assertTrue(player.move('U', generatedMap));
@@ -40,6 +46,9 @@ public class PlayerTest
     @Test
     public void testMoveDown()
     {
+        gameMapCreator.generateGameMap(MAP_HAZARDOUS,2,2);
+        generatedMap = GameMap.getMapInstance();
+
         player.setPlayerStartPosition(new Position(2, 2));
         player.move('D', generatedMap);
 
@@ -49,6 +58,9 @@ public class PlayerTest
     @Test
     public void testMoveDownException()
     {
+        gameMapCreator.generateGameMap(MAP_HAZARDOUS,5,5);
+        generatedMap = GameMap.getMapInstance();
+
         player.setPlayerStartPosition(new Position(0, 0));
 
         Assert.assertTrue(player.move('D', generatedMap));
@@ -57,6 +69,9 @@ public class PlayerTest
     @Test
     public void testMoveLeft()
     {
+        gameMapCreator.generateGameMap(MAP_HAZARDOUS,5,5);
+        generatedMap = GameMap.getMapInstance();
+
         player.setPlayerStartPosition(new Position(2, 2));
         player.move('L', generatedMap);
 
@@ -66,6 +81,8 @@ public class PlayerTest
     @Test
     public void testMoveLeftException()
     {
+        gameMapCreator.generateGameMap(MAP_HAZARDOUS,5,5);
+        generatedMap = GameMap.getMapInstance();
         player.setPlayerStartPosition(new Position(10, 10));
 
         Assert.assertTrue(player.move('L', generatedMap));
@@ -74,6 +91,8 @@ public class PlayerTest
     @Test
     public void testMoveRight()
     {
+        gameMapCreator.generateGameMap(MAP_HAZARDOUS,5,5);
+        generatedMap = GameMap.getMapInstance();
         player.setPlayerStartPosition(new Position(2, 2));
         player.move('R', generatedMap);
 
@@ -83,6 +102,8 @@ public class PlayerTest
     @Test
     public void testMoveRightException()
     {
+        gameMapCreator.generateGameMap(MAP_HAZARDOUS,5,5);
+        generatedMap = GameMap.getMapInstance();
         player.setPlayerStartPosition(new Position(2, 2));
 
         Assert.assertTrue(player.move('R', generatedMap));
@@ -91,6 +112,7 @@ public class PlayerTest
     @Test
     public void testIsInMovedList()
     {
+
         Assert.assertTrue(player.isInMovedList(player.getMovedPositions().get(0)));
     }
 
@@ -103,6 +125,8 @@ public class PlayerTest
     @Test
     public void testGetMoves()
     {
+        gameMapCreator.generateGameMap(MAP_HAZARDOUS,5,5);
+        generatedMap = GameMap.getMapInstance();
         player.move('U', generatedMap);
 
         Assert.assertEquals("Up", player.getMoveDirections());
@@ -111,12 +135,16 @@ public class PlayerTest
     @Test
     public void testMoveDefault()
     {
+        gameMapCreator.generateGameMap(MAP_HAZARDOUS,5,5);
+        generatedMap = GameMap.getMapInstance();
         assertFalse(player.move(' ', generatedMap));
     }
 
     @Test
     public void testMoveUpIncorrect()
     {
+        gameMapCreator.generateGameMap(MAP_HAZARDOUS,5,5);
+        generatedMap = GameMap.getMapInstance();
         player.setPlayerStartPosition(new Position(1, 0));
         Assert.assertFalse(player.move('U', generatedMap));
     }
@@ -125,6 +153,8 @@ public class PlayerTest
     @Test
     public void testMoveLeftIncorrect()
     {
+        gameMapCreator.generateGameMap(MAP_HAZARDOUS,5,5);
+        generatedMap = GameMap.getMapInstance();
         player.setPlayerStartPosition(new Position(0, 1));
         Assert.assertFalse(player.move('L', generatedMap));
     }
@@ -132,6 +162,8 @@ public class PlayerTest
     @Test
     public void testMoveRightIncorrect()
     {
+        gameMapCreator.generateGameMap(MAP_HAZARDOUS,5,5);
+        generatedMap = GameMap.getMapInstance();
         player.setPlayerStartPosition(new Position(10, 0));
         Assert.assertFalse(player.move('R', generatedMap));
     }
@@ -139,6 +171,8 @@ public class PlayerTest
     @Test
     public void testMoveDownIncorrect()
     {
+        gameMapCreator.generateGameMap(MAP_HAZARDOUS,5,5);
+        generatedMap = GameMap.getMapInstance();
         player.setPlayerStartPosition(new Position(0, 10));
         Assert.assertFalse(player.move('D', generatedMap));
     }
@@ -146,6 +180,8 @@ public class PlayerTest
     @Test
     public void testCheckMoveIncorrect()
     {
+        gameMapCreator.generateGameMap(MAP_HAZARDOUS,5,5);
+        generatedMap = GameMap.getMapInstance();
         player.move('U', generatedMap);
 
         assertFalse(player.isInMovedList(new Position(9,9)));
@@ -154,6 +190,8 @@ public class PlayerTest
     @Test
     public void testLastPlayerX()
     {
+        gameMapCreator.generateGameMap(MAP_HAZARDOUS,5,5);
+        generatedMap = GameMap.getMapInstance();
         player.setPlayerStartPosition(new Position(1, 0));
         assertEquals(1, player.getLastPosition().getXCoordinate());
     }
@@ -161,6 +199,8 @@ public class PlayerTest
     @Test
     public void testLastPlayerY()
     {
+        gameMapCreator.generateGameMap(MAP_HAZARDOUS,5,5);
+        generatedMap = GameMap.getMapInstance();
         player.setPlayerStartPosition(new Position(1, 0));
         assertEquals(0, player.getLastPosition().getYCoordinate());
     }

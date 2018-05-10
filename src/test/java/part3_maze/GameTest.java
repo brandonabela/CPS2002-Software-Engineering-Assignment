@@ -6,6 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 
 import static org.junit.Assert.*;
+import static part3_maze.GameMap.getMapInstance;
 
 public class GameTest
 {
@@ -17,7 +18,7 @@ public class GameTest
     @Before
     public void setup()
     {
-        String data = "1\n2\n5";
+        String data = "1\n2\n5\n1";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
         game = new Game();
     }
@@ -33,9 +34,8 @@ public class GameTest
     public void test_GameConstructor_MapSet()
     {
 
-        assertEquals(5, Game.generatedMap.getMapDetail().length);
+        assertEquals(20, Game.generatedMap.getMapDetail().length);
     }
-
     @Test
     public void test_checkPlayerMap_PlayerSetException() throws PlayerMapRatioException
     {
@@ -46,8 +46,9 @@ public class GameTest
     @Test
     public void test_GameConstructor_ExceptionCatch()
     {
-        String data = "1\n10\n5\n2\n5";
+        String data = "1\n10\n5\n2\n5\n2";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
+        GameMap.reset();
         game = new Game();
     }
 
@@ -74,18 +75,27 @@ public class GameTest
     @Test
     public void test__checkPlayerMap_MoreThanFivePlayersAmount()
     {
-        String data = "1\n8\n20";
+        String data = "1\n8\n20\n1";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
+        GameMap.reset();
         game = new Game();
-
-        assertEquals(8, Game.players.length);
+        assertEquals(8, Game.teams.size());
+    }
+    @Test
+    public void test__mapTypeIncorrect()
+    {
+        String data = "1\n2\n5\n0\n1";
+        System.setIn(new ByteArrayInputStream(data.getBytes()));
+        GameMap.reset();
+        game = new Game();
     }
 
     @Test
     public void test_checkPlayerMap_MoreThanFivePlayersMap()
     {
-        String data = "1\n8\n20";
+        String data = "1\n8\n20\n1";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
+        GameMap.reset();
         game = new Game();
 
         assertEquals(20, Game.generatedMap.getMapDetail().length);
@@ -100,6 +110,7 @@ public class GameTest
     @Test
     public void test_generateHTMLFiles_OpenFile()
     {
+
         Game.generateHTMLFiles();
     }
 
@@ -251,8 +262,9 @@ public class GameTest
     @Test
     public void test_collaborativeMode_correct()
     {
-        String data = "2\n6\n4\n10";
+        String data = "2\n6\n4\n10\n1";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
+        GameMap.reset();
         Game game = new Game();
         assertEquals(4,Game.teams.size());
     }
@@ -260,8 +272,9 @@ public class GameTest
     @Test
     public void test_collaborativeMode_IncorrectPlayerCount()
     {
-        String data = "2\n19\n4\n10\n6\n4\n10";
+        String data = "2\n19\n4\n10\n4\n4\n5\n1";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
+        GameMap.reset();
         Game game = new Game();
         assertEquals(4,Game.teams.size());
     }
@@ -269,8 +282,9 @@ public class GameTest
     @Test
     public void test_collaborativeMode_IncorrectPlayerTeamRatio()
     {
-        String data = "2\n2\n6\n5\n6\n4\n10";
+        String data = "2\n2\n6\n5\n6\n4\n10\n1";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
+        GameMap.reset();
         Game game = new Game();
         assertEquals(4,Game.teams.size());
     }
@@ -278,7 +292,7 @@ public class GameTest
     @Test
     public void test_collaborativeMode_EvenTeams()
     {
-        String data = "2\n8\n2\n12";
+        String data = "2\n8\n2\n12\n1";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
         assertEquals(2, Game.teams.size());
     }
@@ -286,7 +300,7 @@ public class GameTest
     @Test
     public void test_GameConstructor_WrongInput()
     {
-        String data = "3\n2\n6\n3\n12";
+        String data = "3\n2\n6\n3\n12\n1";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
         assertEquals(1, Game.teams.get(0).players.length);
     }

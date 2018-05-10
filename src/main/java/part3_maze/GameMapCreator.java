@@ -11,7 +11,7 @@ class GameMapCreator
         MAP_HAZARDOUS
     }
 
-    GameMap generateGameMap(MapType mapType, int xSize, int ySize)
+    void generateGameMap(MapType mapType, int xSize, int ySize)
     {
         switch (mapType)
         {
@@ -21,7 +21,6 @@ class GameMapCreator
                 safeMap.setMapSize(xSize, ySize);
                 safeMap.generate();
 
-                return safeMap;
             }
 
             case MAP_HAZARDOUS:
@@ -30,10 +29,8 @@ class GameMapCreator
                 hazardousMap.setMapSize(xSize, ySize);
                 hazardousMap.generate();
 
-                return hazardousMap;
             }
         }
 
-        return null;
     }
 }
