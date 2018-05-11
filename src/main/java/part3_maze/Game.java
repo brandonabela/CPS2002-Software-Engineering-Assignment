@@ -1,5 +1,11 @@
 package part3_maze;
 
+import part3_maze.exception.PlayerMapRatioException;
+import part3_maze.gameMapCreator.GameMapCreator;
+import part3_maze.gameMapCreator.GameMapCreatorHazardousMap;
+import part3_maze.gameMapCreator.GameMapCreatorSafeMap;
+import part3_maze.gameMaps.GameMap;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Random;
@@ -15,15 +21,13 @@ import java.util.Scanner;
  */
 public class Game
 {
-    GameMapCreator gameMapCreator;          // The game map creator which is responsible for creating the game maps
-    static GameMap generatedMap;                   // Stores the created map for the team or players
+    static GameMap generatedMap;            // Stores the created map for the team or players
     boolean playerWon;                      // Boolean to determine if a player has won the game
     static int playerTurn;                  // The index of which player is going to play
-    //static Player[] players; NO LONGER USING THIS               // An array which stores all the players within the game
     ArrayList<Integer> lostPlayers;         // An array of integers which stores all the players who lost the game
     static ArrayList<Team> teams;
     private int totalPlayers;
-    Scanner scanner;
+    private Scanner scanner;
 
     /**
      * Game constructor.
@@ -35,8 +39,6 @@ public class Game
      */
     Game()
     {
-
-
         scanner = new Scanner(System.in);
         lostPlayers = new ArrayList<Integer>();
         teams = new ArrayList<Team>();
@@ -71,7 +73,6 @@ public class Game
         int mapChoice = 0;
 
         boolean validInput = false;
-
 
         while (!validInput)
         {
@@ -110,7 +111,6 @@ public class Game
 
         boolean validInput = false;
 
-
         while (!validInput)
         {
             try
@@ -143,7 +143,6 @@ public class Game
         totalPlayers = amountOfPlayersInput;
         inputMapChoice(mapSizeInput, mapChoice);
         createTeams(amountOfPlayersInput, teamLimitInput);
-
     }
 
     private void inputMapChoice(int mapSizeInput, int mapChoice)
@@ -152,6 +151,9 @@ public class Game
         {
             System.out.println("Please input 1 for Safe Map and 2 for Hazardous Map");
             mapChoice = scanner.nextInt();
+
+            // The game map creator which is responsible for creating the game maps
+            GameMapCreator gameMapCreator;
 
             if (mapChoice == 1)
             {
@@ -165,7 +167,8 @@ public class Game
                 gameMapCreator.generateGameMap(mapSizeInput, mapSizeInput);
                 generatedMap = GameMap.getMapInstance();
                 System.out.println();
-            }else
+            }
+            else
             {
                 System.out.println("Please enter a correct choice.");
             }
@@ -254,9 +257,6 @@ public class Game
         {
             throw new PlayerMapRatioException(amountOfPlayers, mapSize);
         }
-
-
-        //setNumberOfPlayers(amountOfPlayers, mapSize); NO LONGER USING THIS
     }
 
     /**
@@ -488,40 +488,6 @@ public class Game
 
         return htmlString.toString();
     }
-    //NO LONGER USING THIS
-    /**
-     * Gives the players starting positions which are non water tiles and non treasure tiles
-     *
-     * Used in checkPlayerMap()
-     *
-     * @param amountOfPlayers the number of players
-     * @param mapSize the size of the map
-     * @return true for correct amount of player / false for incorrect amount of players
-     */
-//    private boolean setNumberOfPlayers(int amountOfPlayers, int mapSize)
-//    {
-//        Random rand = new Random();
-//        players = new Player[amountOfPlayers];
-//
-//        if(2 <= amountOfPlayers && amountOfPlayers <= 8)
-//        {
-//            for (int i = 0; i < amountOfPlayers; i ++)
-//            {
-//                players[i] = new Player(mapSize,1);
-//
-//                while(!generatedMap.isTileNotUsed(players[i].getLastPosition()))
-//                {
-//                    players[i].setPlayerStartPosition(new Position(rand.nextInt(mapSize), rand.nextInt(mapSize)));
-//                }
-//            }
-//
-//            return true;
-//        }
-//        else
-//        {
-//            return false;
-//        }
-//    }
 
     /**
      * Checks if a player is dead.

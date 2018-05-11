@@ -2,11 +2,13 @@ package part3_maze;
 
 import org.junit.*;
 import org.junit.rules.ExpectedException;
+import part3_maze.exception.PlayerMapRatioException;
+import part3_maze.gameMaps.GameMap;
+
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 
 import static org.junit.Assert.*;
-import static part3_maze.GameMap.getMapInstance;
 
 public class GameTest
 {
@@ -26,16 +28,15 @@ public class GameTest
     @Test
     public void test_GameConstructor_PlayerSet()
     {
-
         assertEquals(2, Game.teams.size());
     }
 
     @Test
     public void test_GameConstructor_MapSet()
     {
-
         assertEquals(20, Game.generatedMap.getMapDetail().length);
     }
+
     @Test
     public void test_checkPlayerMap_PlayerSetException() throws PlayerMapRatioException
     {
@@ -81,6 +82,7 @@ public class GameTest
         game = new Game();
         assertEquals(8, Game.teams.size());
     }
+
     @Test
     public void test__mapTypeIncorrect()
     {
@@ -110,7 +112,6 @@ public class GameTest
     @Test
     public void test_generateHTMLFiles_OpenFile()
     {
-
         Game.generateHTMLFiles();
     }
 
@@ -266,7 +267,7 @@ public class GameTest
         System.setIn(new ByteArrayInputStream(data.getBytes()));
         GameMap.reset();
         Game game = new Game();
-        assertEquals(4,Game.teams.size());
+        assertEquals(4, Game.teams.size());
     }
 
     @Test
@@ -276,7 +277,7 @@ public class GameTest
         System.setIn(new ByteArrayInputStream(data.getBytes()));
         GameMap.reset();
         Game game = new Game();
-        assertEquals(4,Game.teams.size());
+        assertEquals(4, Game.teams.size());
     }
 
     @Test
@@ -286,7 +287,7 @@ public class GameTest
         System.setIn(new ByteArrayInputStream(data.getBytes()));
         GameMap.reset();
         Game game = new Game();
-        assertEquals(4,Game.teams.size());
+        assertEquals(4, Game.teams.size());
     }
 
     @Test

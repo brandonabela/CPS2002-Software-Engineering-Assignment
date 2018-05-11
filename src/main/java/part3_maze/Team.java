@@ -1,5 +1,7 @@
 package part3_maze;
 
+import part3_maze.gameMaps.GameMap;
+
 import java.util.Random;
 
 class Team

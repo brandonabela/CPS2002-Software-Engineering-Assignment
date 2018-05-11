@@ -2,6 +2,11 @@ package part3_maze;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import part3_maze.gameMapCreator.GameMapCreator;
+import part3_maze.gameMapCreator.GameMapCreatorHazardousMap;
+import part3_maze.gameMapCreator.GameMapCreatorSafeMap;
+import part3_maze.gameMaps.GameMap;
+
 import static org.junit.Assert.*;
 
 public class GameMapTest
@@ -22,12 +27,14 @@ public class GameMapTest
 
         assertEquals(5,GameMap.getMapInstance().sizeOfMap);
     }
+
     @Test
     public void test_mapSize_Correct()
     {
         gameMapCreator.generateGameMap(5,5);
         assertTrue(GameMap.getMapInstance().setMapSize(5, 5));
     }
+
     @Test
     public void test_mapSize_CorrectHazard(){
         GameMap.reset();
@@ -68,10 +75,7 @@ public class GameMapTest
         gameMap.generate();
         TileType tileType = gameMap.getTileType(new Position(0,0));
 
-        if(tileType == TileType.ERROR)
-        {
-            fail();
-        }
+        if(tileType == TileType.ERROR)  {   fail(); }
     }
 
     @Test

@@ -1,4 +1,7 @@
-package part3_maze;
+package part3_maze.gameMaps;
+
+import part3_maze.Position;
+import part3_maze.TileType;
 
 import java.util.Random;
 
@@ -6,8 +9,8 @@ public abstract class GameMap
 {
     protected String gameMapName = null; // Stores the name of the map
 
-    protected int sizeOfMap; // Stores the size of the map
-    protected TileType[][] mapDetail; // Stores the actual map
+    public int sizeOfMap; // Stores the size of the map
+    private TileType[][] mapDetail; // Stores the actual map
     protected static GameMap mapInstance; // Stores a single instance of the actual map
 
     protected GameMap()
@@ -15,7 +18,7 @@ public abstract class GameMap
         this.gameMapName = "Game Map";
     }
 
-    protected abstract void generate();
+    public abstract void generate();
 
     /**
      * Changes the tile colour in the position given in the map.
@@ -26,22 +29,24 @@ public abstract class GameMap
      * @param tileCoordinate position to change
      * @param tileType tile to add
      */
-    void changeTileType(Position tileCoordinate, TileType tileType)
+    public void changeTileType(Position tileCoordinate, TileType tileType)
     {
         mapDetail[tileCoordinate.getXCoordinate()][tileCoordinate.getYCoordinate()] = tileType;
     }
 
     // Get Method for Map Detail
-    static GameMap getMapInstance()
+    public static GameMap getMapInstance()
     {
         return mapInstance;
     }
+
     // Reset Static Instance needed in testing
-    static void reset(){
+    public static void reset()
+    {
         mapInstance = null;
     }
 
-    TileType[][] getMapDetail()
+    public TileType[][] getMapDetail()
     {
         return mapDetail;
     }
@@ -53,7 +58,7 @@ public abstract class GameMap
      * @param positionToCheck is the position to be check
      * @return true if not used / false if used
      */
-    boolean isTileNotUsed(Position positionToCheck)
+    public boolean isTileNotUsed(Position positionToCheck)
     {
         return tileToString(mapDetail[positionToCheck.getXCoordinate()][positionToCheck.getYCoordinate()]).equals("grassTile");
     }
@@ -66,7 +71,7 @@ public abstract class GameMap
      * @param tilePosition the tile position to be obtained
      * @return the tile at the parameter's coordinates
      */
-    TileType getTileType(Position tilePosition)
+    public TileType getTileType(Position tilePosition)
     {
         if (tilePosition.getXCoordinate() < mapDetail[0].length && tilePosition.getYCoordinate() < mapDetail.length)
         {
@@ -77,11 +82,18 @@ public abstract class GameMap
             return TileType.ERROR;
         }
     }
-    // To cater for future map types since the difference will only be the amount of water tiles
-    // had to change the way creation works to have the required tile amount
-    protected void createMap(int maxWaterTiles){
+
+    /**
+     * To cater for future map types since the difference will only be the amount of water tiles
+     * had to change the way creation works to have the required tile amount
+     *
+     * @param maxWaterTiles the maximum amount of water tiles
+     */
+    protected void createMap(int maxWaterTiles)
+    {
         mapDetail = new TileType[sizeOfMap][sizeOfMap];
         Random random = new Random();
+
         for (int i = 0; i < mapDetail.length; i ++)
         {
             for (int j = 0; j < mapDetail[0].length; j ++)
@@ -89,35 +101,44 @@ public abstract class GameMap
                 mapDetail[i][j] = TileType.GRASS;
             }
         }
+
         Position randomPosition = new Position(0, 0);
         int waterCount = 0;
         int total = 0; //total tiles covered
         randomPosition.setXCoordinate(random.nextInt(sizeOfMap));
         randomPosition.setYCoordinate(random.nextInt(sizeOfMap));
+
         while (total < (sizeOfMap*sizeOfMap))
         {
-            while (mapDetail[randomPosition.getXCoordinate()][randomPosition.getYCoordinate()] == TileType.WATER){
+            while (mapDetail[randomPosition.getXCoordinate()][randomPosition.getYCoordinate()] == TileType.WATER)
+            {
                 randomPosition.setXCoordinate(random.nextInt(sizeOfMap));
                 randomPosition.setYCoordinate(random.nextInt(sizeOfMap));
             }
+
             if (waterCount <= maxWaterTiles)
             {
                 mapDetail[randomPosition.getXCoordinate()][randomPosition.getYCoordinate()] = TileType.WATER;
                 waterCount+=1;
-            }else
+            }
+            else
+            {
                 break;
+            }
 
-            total+=1;
+            total += 1;
         }
+
         int random_x = random.nextInt(sizeOfMap);
         int random_y = random.nextInt(sizeOfMap);
-        while(mapDetail[random_x][random_y] == TileType.WATER){
+
+        while(mapDetail[random_x][random_y] == TileType.WATER)
+        {
             random_x = random.nextInt(sizeOfMap);
             random_y = random.nextInt(sizeOfMap);
         }
 
         mapDetail[random_x][random_y] = TileType.TREASURE;
-
     }
 
     /**
@@ -129,7 +150,7 @@ public abstract class GameMap
      * @param ySize - size of columns
      * @return true if parameters are equal / false if parameters are not equal
      */
-    boolean setMapSize(int xSize, int ySize)
+    public boolean setMapSize(int xSize, int ySize)
     {
         if (xSize == ySize)
         {
@@ -150,7 +171,7 @@ public abstract class GameMap
      * @param tileType tile to convert
      * @return type of tile
      */
-    String tileToString(TileType tileType)
+    public String tileToString(TileType tileType)
     {
         switch (tileType)
         {
@@ -160,5 +181,4 @@ public abstract class GameMap
             default         :   return "unknownTile";
         }
     }
-
 }

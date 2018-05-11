@@ -4,8 +4,11 @@ import org.junit.Assert;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import part3_maze.gameMapCreator.GameMapCreator;
+import part3_maze.gameMapCreator.GameMapCreatorHazardousMap;
+import part3_maze.gameMaps.GameMap;
 
+import static org.junit.Assert.*;
 
 public class PlayerTest
 {
@@ -112,7 +115,6 @@ public class PlayerTest
     @Test
     public void testIsInMovedList()
     {
-
         Assert.assertTrue(player.isInMovedList(player.getMovedPositions().get(0)));
     }
 
@@ -148,7 +150,6 @@ public class PlayerTest
         player.setPlayerStartPosition(new Position(1, 0));
         Assert.assertFalse(player.move('U', generatedMap));
     }
-
 
     @Test
     public void testMoveLeftIncorrect()
