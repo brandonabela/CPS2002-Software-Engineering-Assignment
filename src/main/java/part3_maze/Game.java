@@ -35,7 +35,7 @@ public class Game
      */
     Game()
     {
-        gameMapCreator = new GameMapCreator(); // Creating a Game Map Creator
+
 
         scanner = new Scanner(System.in);
         lostPlayers = new ArrayList<Integer>();
@@ -155,12 +155,14 @@ public class Game
 
             if (mapChoice == 1)
             {
-                gameMapCreator.generateGameMap(GameMapCreator.MapType.MAP_SAFE, mapSizeInput, mapSizeInput);
+                gameMapCreator = new GameMapCreatorSafeMap();
+                gameMapCreator.generateGameMap(mapSizeInput, mapSizeInput);
                 generatedMap = GameMap.getMapInstance();
             }
             else if (mapChoice == 2)
             {
-                gameMapCreator.generateGameMap(GameMapCreator.MapType.MAP_HAZARDOUS, mapSizeInput, mapSizeInput);
+                gameMapCreator = new GameMapCreatorHazardousMap();
+                gameMapCreator.generateGameMap(mapSizeInput, mapSizeInput);
                 generatedMap = GameMap.getMapInstance();
                 System.out.println();
             }else

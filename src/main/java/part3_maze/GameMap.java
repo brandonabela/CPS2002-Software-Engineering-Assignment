@@ -109,7 +109,15 @@ public abstract class GameMap
 
             total+=1;
         }
-        mapDetail[random.nextInt(sizeOfMap)][random.nextInt(sizeOfMap)] = TileType.TREASURE;
+        int random_x = random.nextInt(sizeOfMap);
+        int random_y = random.nextInt(sizeOfMap);
+        while(mapDetail[random_x][random_y] == TileType.WATER){
+            random_x = random.nextInt(sizeOfMap);
+            random_y = random.nextInt(sizeOfMap);
+        }
+
+        mapDetail[random_x][random_y] = TileType.TREASURE;
+
     }
 
     /**
