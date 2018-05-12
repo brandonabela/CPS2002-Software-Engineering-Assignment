@@ -291,9 +291,10 @@ public class Game
     }
 
     /**
-     * Core method to play the game.
-     * Checks if the players wins after input.
+     * Core method to play the game which checks if the players wins after input.
+     *
      * Uses different methods in the class to verify a player's status in the game.
+     *
      * Also uses generateHTMLFiles() to generate files for specific players
      */
     void startGame()
@@ -309,7 +310,7 @@ public class Game
             switchToAlivePlayer();
             generateHTMLFiles();
             tryToMove();
-            CheckMovedTile();
+            checkMovedTile();
 
             if((playerTurn += 1) >= totalPlayers)    {   playerTurn = 0; }
         }
@@ -361,9 +362,32 @@ public class Game
                     break;
                 }
             }
+
+            if (currentPlayer != null)  {   break;  }
         }
 
         return currentPlayer;
+    }
+
+    private static Team currentTeam()
+    {
+        Team currentTeam = null;
+
+        for (Team team : teams)
+        {
+            for (Player player : team.players)
+            {
+                if (player.playerID == playerTurn)
+                {
+                    currentTeam = team;
+                    break;
+                }
+            }
+
+            if (currentTeam != null)  {   break;  }
+        }
+
+        return currentTeam;
     }
 
     /**
@@ -373,7 +397,7 @@ public class Game
      *
      * Used in startGame()
      */
-    void CheckMovedTile()
+    void checkMovedTile()
     {
         Position lastPlayerPosition = currentPlayer().getLastPosition();
 
@@ -465,7 +489,14 @@ public class Game
                 {
                     htmlString.append("        <th class=\"");
 
-                    if (currentPlayer().isInMovedList(new Position(j - 1, i - 1)))
+                    boolean displayTile = false;
+
+                    for (Player aPlayer : currentTeam().players)
+                    {
+                        displayTile = aPlayer.isPositionInMovedList(new Position(j - 1, i - 1));
+                    }
+
+                    if (displayTile)
                     {
                         htmlString.append(generatedMap.tileToString(generatedMap.getTileType(new Position(j - 1, i - 1)))).append("\">");
 

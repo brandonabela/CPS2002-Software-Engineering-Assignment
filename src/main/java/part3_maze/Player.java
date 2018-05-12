@@ -124,7 +124,7 @@ class Player
      * @param positionToCheck the position which is going to be check
      * @return true if the position was visited / false if the position was not visited by the player
      */
-    boolean isInMovedList(Position positionToCheck)
+    boolean isPositionInMovedList(Position positionToCheck)
     {
         for (Position movedPosition : movedPositions)
         {

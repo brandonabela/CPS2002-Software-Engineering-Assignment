@@ -115,7 +115,7 @@ public class PlayerTest
     @Test
     public void testIsInMovedList()
     {
-        Assert.assertTrue(player.isInMovedList(player.getMovedPositions().get(0)));
+        Assert.assertTrue(player.isPositionInMovedList(player.getMovedPositions().get(0)));
     }
 
     @Test
@@ -185,7 +185,7 @@ public class PlayerTest
         generatedMap = GameMap.getMapInstance();
         player.move('U', generatedMap);
 
-        assertFalse(player.isInMovedList(new Position(9,9)));
+        assertFalse(player.isPositionInMovedList(new Position(9,9)));
     }
 
     @Test

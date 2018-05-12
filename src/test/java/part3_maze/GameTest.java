@@ -205,7 +205,7 @@ public class GameTest
             System.setIn(new ByteArrayInputStream(data.getBytes()));
             Game.generatedMap.changeTileType(new Position(0, 1), TileType.WATER);
             game.tryToMove();
-            game.CheckMovedTile();
+            game.checkMovedTile();
             assertTrue(game.isPlayerDead(0));
         }
     }
@@ -223,7 +223,7 @@ public class GameTest
             System.setIn(new ByteArrayInputStream(data.getBytes()));
             Game.generatedMap.changeTileType(new Position(0, 1), TileType.TREASURE);
             game.tryToMove();
-            game.CheckMovedTile();
+            game.checkMovedTile();
             assertTrue(game.playerWon);
         }
     }
