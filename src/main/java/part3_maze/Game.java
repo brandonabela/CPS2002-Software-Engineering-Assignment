@@ -349,18 +349,21 @@ public class Game
 
     static Player currentPlayer()
     {
+        Player currentPlayer = null;
+
         for (Team team : teams)
         {
             for (Player player : team.players)
             {
                 if (player.playerID == playerTurn)
                 {
-                    return player;
+                    currentPlayer = player;
+                    break;
                 }
             }
         }
 
-        return null;
+        return currentPlayer;
     }
 
     /**
