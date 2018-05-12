@@ -1,5 +1,7 @@
 package part3_maze;
 
+import part3_maze.gameMaps.GameMap;
+
 import java.util.Random;
 import java.util.ArrayList;
 
@@ -11,12 +13,13 @@ class Player
     private StringBuilder moveDirections;       // The directions which the player have moved
     private ArrayList<Position> movedPositions; // The positions the player has visited
     int playerID;
+
     /**
      * Constructor which is responsible for defining the player
      *
      * @param mapSize the size of the map which the player will be randomly placed within the map
      */
-    Player(int mapSize,int playerID)
+    Player(int mapSize, int playerID)
     {
         Random random = new Random();
 
@@ -31,10 +34,10 @@ class Player
      * Responsible for moving the player in the map
      *
      * @param moveDirection the direction which the player would like to move
-     * @param map the map which the player will move on
+     * @param gameMap the game map which the player will move on
      * @return true if the player successfully moved / false if the player made incorrect move
      */
-    boolean move(char moveDirection, Map map)
+    boolean move(char moveDirection, GameMap gameMap)
     {
         Position playerPosition = movedPositions.get(movedPositions.size() - 1);
 
@@ -79,7 +82,7 @@ class Player
                 if (moveDirections.length() > 1) {   moveDirections.append(", ");  }
                 moveDirections.append("Down");
 
-                if (playerPosition.getYCoordinate() + 1 < map.getMapDetail().length)
+                if (playerPosition.getYCoordinate() + 1 < gameMap.getMapDetail().length)
                 {
                     this.movedPositions.add(new Position(playerPosition.getXCoordinate(), playerPosition.getYCoordinate() + 1));
                     return true;
@@ -96,7 +99,7 @@ class Player
                 if (moveDirections.length() >= 1) {   moveDirections.append(", ");  }
                 moveDirections.append("Right");
 
-                if(playerPosition.getXCoordinate() + 1 < map.getMapDetail()[0].length)
+                if(playerPosition.getXCoordinate() + 1 < gameMap.getMapDetail()[0].length)
                 {
                     this.movedPositions.add(new Position(playerPosition.getXCoordinate() + 1, playerPosition.getYCoordinate()));
                     return true;

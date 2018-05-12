@@ -2,6 +2,9 @@ package part3_maze;
 
 import org.junit.*;
 import org.junit.rules.ExpectedException;
+import part3_maze.exception.PlayerMapRatioException;
+import part3_maze.gameMaps.GameMap;
+
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 
@@ -11,30 +14,27 @@ public class GameTest
 {
     private Game game;
 
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
 
     @Before
     public void setup()
     {
-        String data = "1\n2\n5";
+        String data = "1\n2\n5\n1";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
         game = new Game();
     }
 
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
-
     @Test
     public void test_GameConstructor_PlayerSet()
     {
-
         assertEquals(2, Game.teams.size());
     }
 
     @Test
     public void test_GameConstructor_MapSet()
     {
-
-        assertEquals(5, Game.map.getMapDetail().length);
+        assertEquals(20, Game.generatedMap.getMapDetail().length);
     }
 
     @Test
@@ -47,8 +47,9 @@ public class GameTest
     @Test
     public void test_GameConstructor_ExceptionCatch()
     {
-        String data = "1\n10\n5\n2\n5";
+        String data = "1\n10\n5\n2\n5\n2";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
+        GameMap.reset();
         game = new Game();
     }
 
@@ -75,21 +76,31 @@ public class GameTest
     @Test
     public void test__checkPlayerMap_MoreThanFivePlayersAmount()
     {
-        String data = "1\n8\n20";
+        String data = "1\n8\n20\n1";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
+        GameMap.reset();
         game = new Game();
+        assertEquals(8, Game.teams.size());
+    }
 
-        assertEquals(8, Game.players.length);
+    @Test
+    public void test__mapTypeIncorrect()
+    {
+        String data = "1\n2\n5\n0\n1";
+        System.setIn(new ByteArrayInputStream(data.getBytes()));
+        GameMap.reset();
+        game = new Game();
     }
 
     @Test
     public void test_checkPlayerMap_MoreThanFivePlayersMap()
     {
-        String data = "1\n8\n20";
+        String data = "1\n8\n20\n1";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
+        GameMap.reset();
         game = new Game();
 
-        assertEquals(20, Game.map.getMapDetail().length);
+        assertEquals(20, Game.generatedMap.getMapDetail().length);
     }
 
     @Test
@@ -153,48 +164,68 @@ public class GameTest
     public void Test_tryToMove_CorrectInputForMove()
     {
         Game.playerTurn = 0;
-        Game.currentPlayer().setPlayerStartPosition(new Position(0,0));
-        String data = "R";
-        System.setIn(new ByteArrayInputStream(data.getBytes()));
-        game.tryToMove();
-        assertEquals(0,Game.currentPlayer().getLastPosition().getYCoordinate());
+
+        if (Game.currentPlayer() != null)
+        {
+            Game.currentPlayer().setPlayerStartPosition(new Position(0,0));
+
+            String data = "R";
+            System.setIn(new ByteArrayInputStream(data.getBytes()));
+            game.tryToMove();
+            assertEquals(0,Game.currentPlayer().getLastPosition().getYCoordinate());
+        }
     }
 
     @Test
     public void test_tryToMove_IncorrectMoveThenCorrect()
     {
         Game.playerTurn = 0;
-        Game.currentPlayer().setPlayerStartPosition(new Position(0,0));
-        String data = "U\nR";
-        System.setIn(new ByteArrayInputStream(data.getBytes()));
-        game.tryToMove();
-        assertEquals(1,Game.currentPlayer().getLastPosition().getXCoordinate());
+
+        if (Game.currentPlayer() != null)
+        {
+            Game.currentPlayer().setPlayerStartPosition(new Position(0,0));
+
+            String data = "U\nR";
+            System.setIn(new ByteArrayInputStream(data.getBytes()));
+            game.tryToMove();
+            assertEquals(1,Game.currentPlayer().getLastPosition().getXCoordinate());
+        }
     }
 
     @Test
     public void test_CheckMovedTile_PlayerMovingIntoWaterTile()
     {
         Game.playerTurn = 0;
-        Game.currentPlayer().setPlayerStartPosition(new Position(0,0));
-        String data = "R";
-        System.setIn(new ByteArrayInputStream(data.getBytes()));
-        Game.map.changeTileType(new Position(0, 1), TileType.WATER);
-        game.tryToMove();
-        game.CheckMovedTile();
-        assertTrue(game.isPlayerDead(0));
+
+        if (Game.currentPlayer() != null)
+        {
+            Game.currentPlayer().setPlayerStartPosition(new Position(0,0));
+
+            String data = "R";
+            System.setIn(new ByteArrayInputStream(data.getBytes()));
+            Game.generatedMap.changeTileType(new Position(0, 1), TileType.WATER);
+            game.tryToMove();
+            game.CheckMovedTile();
+            assertTrue(game.isPlayerDead(0));
+        }
     }
 
     @Test
     public void test_CheckMovedTile_PlayerMovingIntoTreasure()
     {
         Game.playerTurn = 0;
-        Game.currentPlayer().setPlayerStartPosition(new Position(0,0));
-        String data = "R";
-        System.setIn(new ByteArrayInputStream(data.getBytes()));
-        Game.map.changeTileType(new Position(0, 1), TileType.TREASURE);
-        game.tryToMove();
-        game.CheckMovedTile();
-        assertTrue(game.playerWon);
+
+        if (Game.currentPlayer() != null)
+        {
+            Game.currentPlayer().setPlayerStartPosition(new Position(0,0));
+
+            String data = "R";
+            System.setIn(new ByteArrayInputStream(data.getBytes()));
+            Game.generatedMap.changeTileType(new Position(0, 1), TileType.TREASURE);
+            game.tryToMove();
+            game.CheckMovedTile();
+            assertTrue(game.playerWon);
+        }
     }
 
     @Test
@@ -217,60 +248,71 @@ public class GameTest
     public void test_StartGame_PlayerWins()
     {
         game.lostPlayers.add(1);
-        Game.currentPlayer().setPlayerStartPosition(new Position(0,0));
-        String data = "R";
-        System.setIn(new ByteArrayInputStream(data.getBytes()));
-        Game.map.changeTileType(new Position(0, 1), TileType.TREASURE);
-        game.startGame();
-        assertTrue(game.playerWon);
+
+        if (Game.currentPlayer() != null)
+        {
+            Game.currentPlayer().setPlayerStartPosition(new Position(0,0));
+            String data = "R";
+            System.setIn(new ByteArrayInputStream(data.getBytes()));
+            Game.generatedMap.changeTileType(new Position(0, 1), TileType.TREASURE);
+            game.startGame();
+            assertTrue(game.playerWon);
+        }
     }
 
     @Test
-    public void test_collab_mode_correct(){
-        String data = "2\n6\n4\n10";
+    public void test_collaborativeMode_correct()
+    {
+        String data = "2\n6\n4\n10\n1";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
+        GameMap.reset();
         Game game = new Game();
-        assertEquals(4,Game.teams.size());
+        assertEquals(4, Game.teams.size());
     }
 
     @Test
-    public void test_collab_mode_IncorrectPlayerCount(){
-        String data = "2\n19\n4\n10\n6\n4\n10";
+    public void test_collaborativeMode_IncorrectPlayerCount()
+    {
+        String data = "2\n19\n4\n10\n4\n4\n5\n1";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
+        GameMap.reset();
         Game game = new Game();
-        assertEquals(4,Game.teams.size());
+        assertEquals(4, Game.teams.size());
     }
 
     @Test
-    public void test_collab_mode_IncorrectPlayerTeamRatio(){
-        String data = "2\n2\n6\n5\n6\n4\n10";
+    public void test_collaborativeMode_IncorrectPlayerTeamRatio()
+    {
+        String data = "2\n2\n6\n5\n6\n4\n10\n1";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
+        GameMap.reset();
         Game game = new Game();
-        assertEquals(4,Game.teams.size());
+        assertEquals(4, Game.teams.size());
     }
 
     @Test
-    public void test_collab_mode_EvenTeams(){
-        String data = "2\n8\n2\n12";
+    public void test_collaborativeMode_EvenTeams()
+    {
+        String data = "2\n8\n2\n12\n1";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
-        Game game = new Game();
-        assertEquals(2,Game.teams.size());
+        assertEquals(2, Game.teams.size());
     }
 
     @Test
-    public void test_GameConstructor_WrongInput(){
-        String data = "3\n2\n6\n3\n12";
+    public void test_GameConstructor_WrongInput()
+    {
+        String data = "3\n2\n6\n3\n12\n1";
         System.setIn(new ByteArrayInputStream(data.getBytes()));
-        Game game = new Game();
-        assertEquals(2,Game.teams.get(0).players.length);
+        assertEquals(1, Game.teams.get(0).players.length);
     }
 
     @Test
-    public void test_currentPlayerNull(){
+    public void test_currentPlayerNull()
+    {
         Game.teams = new ArrayList<Team>();
         assertNull(Game.currentPlayer());
-
     }
+
     @After
     public void cleanup()
     {

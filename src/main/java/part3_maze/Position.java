@@ -14,7 +14,7 @@ public class Position
      * @param xCoordinate the x coordinate to be assigned
      * @param yCoordinate the y coordinate to be assigned
      */
-    Position(int xCoordinate, int yCoordinate)
+    public Position(int xCoordinate, int yCoordinate)
     {
         this.xCoordinate = xCoordinate;
         this.yCoordinate = yCoordinate;
@@ -22,24 +22,24 @@ public class Position
 
     // Get Methods
 
-    int getXCoordinate()
+    public int getXCoordinate()
     {
         return xCoordinate;
     }
 
-    int getYCoordinate()
+    public int getYCoordinate()
     {
         return yCoordinate;
     }
 
     // Set Methods
 
-    void setXCoordinate(int xCoordinate)
+    public void setXCoordinate(int xCoordinate)
     {
         this.xCoordinate = xCoordinate;
     }
 
-    void setYCoordinate(int yCoordinate)
+    public void setYCoordinate(int yCoordinate)
     {
         this.yCoordinate = yCoordinate;
     }
