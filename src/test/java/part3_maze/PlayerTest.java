@@ -127,9 +127,9 @@ public class PlayerTest
     @Test
     public void testGetMoves()
     {
-        GameMap.reset();
         gameMapCreator.generateGameMap(5,5);
         generatedMap = GameMap.getMapInstance();
+        player.setPlayerStartPosition(new Position(2,2));
         player.move('U', generatedMap);
 
         Assert.assertEquals("Up", player.getMoveDirections());
