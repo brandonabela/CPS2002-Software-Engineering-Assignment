@@ -8,8 +8,6 @@ public class SafeMap extends GameMap
 
     public void generate()
     {
-        gameMapName = "Safe Map";
-
         if(mapInstance == null)
         {
             mapInstance = this;

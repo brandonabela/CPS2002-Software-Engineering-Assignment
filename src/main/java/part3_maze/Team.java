@@ -23,6 +23,5 @@ class Team
                 players[i].setPlayerStartPosition(new Position(random.nextInt(generatedMap.sizeOfMap), random.nextInt(generatedMap.sizeOfMap)));
             }
         }
-
     }
 }

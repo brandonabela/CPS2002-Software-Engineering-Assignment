@@ -7,16 +7,9 @@ import java.util.Random;
 
 public abstract class GameMap
 {
-    protected String gameMapName = null; // Stores the name of the map
-
     public int sizeOfMap; // Stores the size of the map
     private TileType[][] mapDetail; // Stores the actual map
-    protected static GameMap mapInstance; // Stores a single instance of the actual map
-
-    protected GameMap()
-    {
-        this.gameMapName = "Game Map";
-    }
+    static GameMap mapInstance; // Stores a single instance of the actual map
 
     public abstract void generate();
 
