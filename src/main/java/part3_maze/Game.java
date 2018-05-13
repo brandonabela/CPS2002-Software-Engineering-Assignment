@@ -489,18 +489,22 @@ public class Game
                 {
                     htmlString.append("        <th class=\"");
 
-                    boolean displayTile = false;
+                    int isCurrentPlayerTile = 0;
 
                     for (Player aPlayer : currentTeam().players)
                     {
-                        displayTile = aPlayer.isPositionInMovedList(new Position(j - 1, i - 1));
+                        if (aPlayer.isPositionInMovedList(new Position(j - 1, i - 1)))
+                        {
+                            isCurrentPlayerTile = (aPlayer == currentPlayer()) ? 1 : 2;
+                        }
                     }
 
-                    if (displayTile)
+                    if (isCurrentPlayerTile == 1 || isCurrentPlayerTile == 2)
                     {
                         htmlString.append(generatedMap.tileToString(generatedMap.getTileType(new Position(j - 1, i - 1)))).append("\">");
 
-                        if (currentPlayer().getMovedPositions().get(currentPlayer().getMovedPositions().size() - 1).getYCoordinate() == i - 1 &&
+                        if (isCurrentPlayerTile == 1 &&
+                                currentPlayer().getMovedPositions().get(currentPlayer().getMovedPositions().size() - 1).getYCoordinate() == i - 1 &&
                                 currentPlayer().getMovedPositions().get(currentPlayer().getMovedPositions().size() - 1).getXCoordinate() == j - 1)
                         {
                             htmlString.append("<i class=\"glyphicon glyphicon-user\"></i>");
