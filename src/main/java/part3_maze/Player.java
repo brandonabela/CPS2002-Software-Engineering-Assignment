@@ -12,7 +12,7 @@ class Player
 {
     private StringBuilder moveDirections;       // The directions which the player have moved
     private ArrayList<Position> movedPositions; // The positions the player has visited
-    int playerID;
+    int playerID;                               // Stores the player ID
 
     /**
      * Constructor which is responsible for defining the player
@@ -45,11 +45,11 @@ class Player
         {
             case 'U':
             {
-                if (moveDirections.length() > 1) {   moveDirections.append(", ");  }
-                moveDirections.append("Up");
-
                 if(0 <= playerPosition.getYCoordinate() - 1)
                 {
+                    if (moveDirections.length() > 1) {   moveDirections.append(", ");  }
+                    moveDirections.append("Up");
+
                     this.movedPositions.add(new Position(playerPosition.getXCoordinate(), playerPosition.getYCoordinate() - 1));
                     return true;
                 }
@@ -62,11 +62,11 @@ class Player
 
             case 'L':
             {
-                if (moveDirections.length() > 1) {   moveDirections.append(", ");  }
-                moveDirections.append("Left");
-
                 if (0 <= playerPosition.getXCoordinate() - 1)
                 {
+                    if (moveDirections.length() > 1) {   moveDirections.append(", ");  }
+                    moveDirections.append("Left");
+
                     this.movedPositions.add(new Position(playerPosition.getXCoordinate() - 1, playerPosition.getYCoordinate()));
                     return true;
                 }
@@ -79,11 +79,11 @@ class Player
 
             case 'D':
             {
-                if (moveDirections.length() > 1) {   moveDirections.append(", ");  }
-                moveDirections.append("Down");
-
                 if (playerPosition.getYCoordinate() + 1 < gameMap.getMapDetail().length)
                 {
+                    if (moveDirections.length() > 1) {   moveDirections.append(", ");  }
+                    moveDirections.append("Down");
+
                     this.movedPositions.add(new Position(playerPosition.getXCoordinate(), playerPosition.getYCoordinate() + 1));
                     return true;
                 }
@@ -96,11 +96,11 @@ class Player
 
             case 'R':
             {
-                if (moveDirections.length() >= 1) {   moveDirections.append(", ");  }
-                moveDirections.append("Right");
-
                 if(playerPosition.getXCoordinate() + 1 < gameMap.getMapDetail()[0].length)
                 {
+                    if (moveDirections.length() >= 1) {   moveDirections.append(", ");  }
+                    moveDirections.append("Right");
+
                     this.movedPositions.add(new Position(playerPosition.getXCoordinate() + 1, playerPosition.getYCoordinate()));
                     return true;
                 }
@@ -110,12 +110,9 @@ class Player
                     return false;
                 }
             }
-
-            default:
-            {
-                return false;
-            }
         }
+
+        return false;
     }
 
     /**
