@@ -6,10 +6,23 @@ import part3_maze.gameMaps.GameMap;
 
 import java.util.Random;
 
+/**
+ * Class: Team
+ * Methods: 1
+ */
 class Team
 {
-    Player[] players;
+    Player[] players; // Stores the players which are in the team
 
+    /**
+     *  Creates a team with the requested players giving each player a random tile to start on
+     *
+     * Used in the class Game
+     *
+     * @param teamSize - size of the team.
+     * @param generatedMap - map used in game
+     * @param playerID - players to be stored in the team.
+     */
     Team(int teamSize, GameMap generatedMap, int[] playerID)
     {
         players = new Player[teamSize];

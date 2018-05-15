@@ -70,6 +70,10 @@ public class Game
      *  Method which is responsible for handling the solo game mode. Where the player inputs the amount of players
      *  which are going to be played and the map size and the type of game map which will be used whether it is a
      *  safe map or hazard map
+     *
+     *  Each player is stored in a different object of type Team
+     *
+     *  Used in Game constructor.
      */
     private void soloMode()
     {
@@ -110,6 +114,8 @@ public class Game
     /**
      *  Method is responsible for handling the collaboration game mode. Which would require the user to input that
      *  is the amount of players in the team and amount of teams and the type of map which will be used
+     *
+     *  Used in Game Constructor
      */
     private void collaborationMode()
     {
@@ -157,6 +163,10 @@ public class Game
     /**
      *  This method handles the type of map which will be used that are the safe map or the hazard map
      *
+     *  Only 1 instance of the map can be created.
+     *
+     *  Used in collaborationMode() and soloMode()
+     *
      * @param mapSizeInput the size of map which the user inputted
      * @param mapChoice stores the type of map which will be generated
      */
@@ -192,6 +202,8 @@ public class Game
 
     /**
      *  Method is responsible for handling the creating of the team based on the amount of players and the team amount
+     *
+     *  Used in collaborationMode()
      *
      * @param playerAmount the amount of players which are going to be spread amount the teams
      * @param teamAmount the amount of teams which are going to be played in the game
@@ -231,7 +243,9 @@ public class Game
     }
 
     /**
-     *  Method which checks if the amount of players and team size is not valid
+     *  Method which checks if there are enough players to be stored in teams
+     *
+     *  Used in createTeams()
      *
      * @param amountOfPlayer the amount of players which will play in the game
      * @param teamSize the amount of teams which will be used to spread the players
@@ -243,7 +257,10 @@ public class Game
     }
 
     /**
-     *  Method which is responsible for adding a team with the players which have not been assigned to the team yet
+     *  Method which creates a team by selecting at random a certain amount of player where the players are stored
+     *  within a team object
+     *
+     *  Used in createTeams() and soloMode()
      *
      * @param teamSize the number of players which will be added to the team
      * @param unusedPlayers the array of players which have not be assigned to a team so far
@@ -384,6 +401,8 @@ public class Game
 
     /**
      *  Method which is responsible for obtaining the player which will be played in the game based on the player turn variable
+     *
+     *  Used in almost every function
      *
      * @return a player which is going to be played
      */
