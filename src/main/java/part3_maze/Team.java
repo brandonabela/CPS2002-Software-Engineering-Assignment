@@ -1,5 +1,7 @@
 package part3_maze;
 
+// Importing Libraries and Classes
+
 import part3_maze.gameMaps.GameMap;
 
 import java.util.Random;
@@ -18,7 +20,7 @@ class Team
         {
             players[i] = new Player(generatedMap.sizeOfMap, playerID[i]);
 
-            while(!generatedMap.isTileNotUsed(players[i].getLastPosition()))
+            while(!generatedMap.isTileNotUsed(players[i].getLastPosition())) // Keep looping until a unused tile was found
             {
                 players[i].setPlayerStartPosition(new Position(random.nextInt(generatedMap.sizeOfMap), random.nextInt(generatedMap.sizeOfMap)));
             }

@@ -1,6 +1,6 @@
 package part3_maze;
 
-// Importing Libraries
+// Importing Libraries and Classes
 
 import part3_maze.exception.PlayerMapRatioException;
 import part3_maze.gameMapCreator.GameMapCreator;

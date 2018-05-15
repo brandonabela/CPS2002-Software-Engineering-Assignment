@@ -1,5 +1,7 @@
 package part3_maze;
 
+// Importing Libraries and Classes
+
 import part3_maze.gameMaps.GameMap;
 
 import java.util.Random;
@@ -41,7 +43,7 @@ class Player
     {
         Position playerPosition = movedPositions.get(movedPositions.size() - 1);
 
-        switch (moveDirection)
+        switch (moveDirection) // Based on the direction the player would like to move
         {
             case 'U':
             {
@@ -112,7 +114,7 @@ class Player
             }
         }
 
-        return false;
+        return false; // If not a valid direction
     }
 
     /**
@@ -132,7 +134,7 @@ class Player
             }
         }
 
-        return false;
+        return false; // If the position was found in the moved list
     }
 
     /**

@@ -1,5 +1,7 @@
 package part3_maze.gameMaps;
 
+// Importing Libraries and Classes
+
 import part3_maze.Position;
 import part3_maze.TileType;
 
@@ -39,6 +41,11 @@ public abstract class GameMap
         mapInstance = null;
     }
 
+    /**
+     *  Obtaining the map which was generated
+     *
+     * @return an array of tile types
+     */
     public TileType[][] getMapDetail()
     {
         return mapDetail;
@@ -77,12 +84,12 @@ public abstract class GameMap
     }
 
     /**
-     * To cater for future map types since the difference will only be the amount of water tiles
-     * had to change the way creation works to have the required tile amount
+     * To cater for future map types since the difference will only be the amount of water tiles had to change the
+     * way creation works to have the required tile amount
      *
      * @param maxWaterTiles the maximum amount of water tiles
      */
-    protected void createMap(int maxWaterTiles)
+    void createMap(int maxWaterTiles)
     {
         mapDetail = new TileType[sizeOfMap][sizeOfMap];
         Random random = new Random();
@@ -96,12 +103,14 @@ public abstract class GameMap
         }
 
         Position randomPosition = new Position(0, 0);
-        int waterCount = 0;
-        int total = 0; //total tiles covered
-        randomPosition.setXCoordinate(random.nextInt(sizeOfMap));
-        randomPosition.setYCoordinate(random.nextInt(sizeOfMap));
 
-        while (total < (sizeOfMap*sizeOfMap))
+        int amountOfWater = 0; // Storing the amount of water
+        int totalTilesCovered = 0; // Stores the total tiles covered
+
+        randomPosition.setXCoordinate(random.nextInt(sizeOfMap)); // Random x value based on the map size
+        randomPosition.setYCoordinate(random.nextInt(sizeOfMap)); // Random y value based on the map size
+
+        while (totalTilesCovered < (sizeOfMap * sizeOfMap))
         {
             while (mapDetail[randomPosition.getXCoordinate()][randomPosition.getYCoordinate()] == TileType.WATER)
             {
@@ -109,17 +118,17 @@ public abstract class GameMap
                 randomPosition.setYCoordinate(random.nextInt(sizeOfMap));
             }
 
-            if (waterCount <= maxWaterTiles)
+            if (amountOfWater <= maxWaterTiles)
             {
                 mapDetail[randomPosition.getXCoordinate()][randomPosition.getYCoordinate()] = TileType.WATER;
-                waterCount+=1;
+                amountOfWater+=1;
             }
             else
             {
                 break;
             }
 
-            total += 1;
+            totalTilesCovered ++;
         }
 
         int random_x = random.nextInt(sizeOfMap);
@@ -139,21 +148,14 @@ public abstract class GameMap
      *
      * Used in Game.checkPlayerMap()
      *
-     * @param xSize - size of rows
-     * @param ySize - size of columns
+     * @param xSize size of rows
+     * @param ySize size of columns
      * @return true if parameters are equal / false if parameters are not equal
      */
     public boolean setMapSize(int xSize, int ySize)
     {
-        if (xSize == ySize)
-        {
-            this.sizeOfMap = xSize;
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        if (xSize == ySize) {   this.sizeOfMap = xSize;     return true;    }
+        else                {   return false;                               }
     }
 
     /**
@@ -161,8 +163,8 @@ public abstract class GameMap
      *
      * Used in htmlString()
      *
-     * @param tileType tile to convert
-     * @return type of tile
+     * @param tileType the tile which will be used to be converted to a string
+     * @return a string which represents the tile type
      */
     public String tileToString(TileType tileType)
     {
