@@ -1,5 +1,7 @@
 package part3_maze;
 
+// Importing Libraries
+
 import part3_maze.exception.PlayerMapRatioException;
 import part3_maze.gameMapCreator.GameMapCreator;
 import part3_maze.gameMapCreator.GameMapCreatorHazardousMap;
@@ -11,40 +13,38 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
-/**
- * Main class to run game
+/** This class is responsible for running the game
  *
- * All class variables are package bound to be able to execute different tests.
+ *  All class variables are package bound to be able to execute different tests
  *
- * Total Amount of Methods: 13
- * Total Amount of Variables: 5
+ *  Total Amount of Methods: 19
+ *  Total Amount of Variables: 7
  */
+
 public class Game
 {
-    static GameMap generatedMap;            // Stores the created map for the team or players
-    boolean playerWon;                      // Boolean to determine if a player has won the game
-    static int playerTurn;                  // The index of which player is going to play
-    ArrayList<Integer> lostPlayers;         // An array of integers which stores all the players who lost the game
-    static ArrayList<Team> teams;
-    private int totalPlayers;
-    private Scanner scanner;
+    boolean playerWon;                      // Boolean which will store whether a player has won the game
+    static int playerTurn;                  // Index of which player is going to make a move
+    private int totalPlayers;               // Stores a number of total players
+    static GameMap generatedMap;            // Stores the generated map which will be used by the team or the players
+    static ArrayList<Team> teams;           // Array which stores a team of individuals or a number of players
+    ArrayList<Integer> lostPlayers;         // Array which stores all the players who lost
+    private Scanner scanner;                // Used for user input
 
     /**
-     * Game constructor.
+     *  Game constructor which is responsible for determining the type of game is going to be played whether it is
+     *  a solo game or a team game. Based on the type of game which is going to be played a method will be called
      *
-     * Receives the amount of players and map size from user input.
-     * user input is verified trough different methods in the class.
-     *
-     * Used in main method.
+     *  Method is used in the main method
      */
     Game()
     {
-        scanner = new Scanner(System.in);
-        lostPlayers = new ArrayList<Integer>();
-        teams = new ArrayList<Team>();
-        boolean validInput = false;
+        scanner = new Scanner(System.in); // Initialising the scanner
+        teams = new ArrayList<Team>(); // Initialising the teams array
+        lostPlayers = new ArrayList<Integer>(); // Initialising a lost player team array
 
         int gameModeInput = 0;
+        boolean validInput = false;
 
         while (!validInput)
         {
@@ -59,13 +59,18 @@ public class Game
 
         switch (gameModeInput)
         {
-            case 1: {   soloMode();             break;  }
-            case 2: {   collaborationMode();    break;  }
+            case 1: {   soloMode();             break;  } // If solo game
+            case 2: {   collaborationMode();    break;  } // If collaboration game
         }
 
         playerWon = false;
     }
 
+    /**
+     *  Method which is responsible for handling the solo game mode. Where the player inputs the amount of players
+     *  which are going to be played and the map size and the type of game map which will be used whether it is a
+     *  safe map or hazard map
+     */
     private void soloMode()
     {
         int mapSizeInput = 1;
@@ -102,6 +107,10 @@ public class Game
         }
     }
 
+    /**
+     *  Method is responsible for handling the collaboration game mode. Which would require the user to input that
+     *  is the amount of players in the team and amount of teams and the type of map which will be used
+     */
     private void collaborationMode()
     {
         int mapSizeInput = 1;
@@ -145,9 +154,15 @@ public class Game
         createTeams(amountOfPlayersInput, teamLimitInput);
     }
 
+    /**
+     *  This method handles the type of map which will be used that are the safe map or the hazard map
+     *
+     * @param mapSizeInput the size of map which the user inputted
+     * @param mapChoice stores the type of map which will be generated
+     */
     private void inputMapChoice(int mapSizeInput, int mapChoice)
     {
-        while (mapChoice != 1 && mapChoice != 2)
+        while (mapChoice != 1 && mapChoice != 2) // Keep looping while not a valid input
         {
             System.out.println("Please input 1 for Safe Map and 2 for Hazardous Map");
             mapChoice = scanner.nextInt();
@@ -155,26 +170,32 @@ public class Game
             // The game map creator which is responsible for creating the game maps
             GameMapCreator gameMapCreator;
 
-            if (mapChoice == 1)
+            if (mapChoice == 1) // If safe map
             {
                 gameMapCreator = new GameMapCreatorSafeMap();
                 gameMapCreator.generateGameMap(mapSizeInput, mapSizeInput);
                 generatedMap = GameMap.getMapInstance();
             }
-            else if (mapChoice == 2)
+            else if (mapChoice == 2) // If hazard map
             {
                 gameMapCreator = new GameMapCreatorHazardousMap();
                 gameMapCreator.generateGameMap(mapSizeInput, mapSizeInput);
                 generatedMap = GameMap.getMapInstance();
                 System.out.println();
             }
-            else
+            else // Output that it was not a correct input
             {
                 System.out.println("Please enter a correct choice.");
             }
         }
     }
 
+    /**
+     *  Method is responsible for handling the creating of the team based on the amount of players and the team amount
+     *
+     * @param playerAmount the amount of players which are going to be spread amount the teams
+     * @param teamAmount the amount of teams which are going to be played in the game
+     */
     private void createTeams(int playerAmount, int teamAmount)
     {
         ArrayList<Integer> uniquePlayers = new ArrayList<Integer>();
@@ -209,11 +230,24 @@ public class Game
         }
     }
 
+    /**
+     *  Method which checks if the amount of players and team size is not valid
+     *
+     * @param amountOfPlayer the amount of players which will play in the game
+     * @param teamSize the amount of teams which will be used to spread the players
+     * @return true if it is possible to split the players among the teams
+     */
     private boolean checkValidateTeamToPlayerRatio(int amountOfPlayer, int teamSize)
     {
         return amountOfPlayer / teamSize != 0;
     }
 
+    /**
+     *  Method which is responsible for adding a team with the players which have not been assigned to the team yet
+     *
+     * @param teamSize the number of players which will be added to the team
+     * @param unusedPlayers the array of players which have not be assigned to a team so far
+     */
     private void createTeam(int teamSize, ArrayList<Integer> unusedPlayers)
     {
         Random rand = new Random();
@@ -348,6 +382,11 @@ public class Game
                                 currentPlayer().getMovedPositions().get(currentPlayer().getMovedPositions().size() - 1));
     }
 
+    /**
+     *  Method which is responsible for obtaining the player which will be played in the game based on the player turn variable
+     *
+     * @return a player which is going to be played
+     */
     static Player currentPlayer()
     {
         Player currentPlayer = null;
@@ -369,6 +408,13 @@ public class Game
         return currentPlayer;
     }
 
+    /**
+     *  Method which is responsible for obtaining the team which has a player which is going to be played
+     *
+     *  Used in generateHTMLFile()
+     *
+     * @return a team which has a player who is going to be played
+     */
     private static Team currentTeam()
     {
         Team currentTeam = null;
