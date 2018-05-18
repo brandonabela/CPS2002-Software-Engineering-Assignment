@@ -133,7 +133,7 @@ public class Game
                 System.out.println("Please enter the number of players");
                 amountOfPlayersInput = scanner.nextInt();
 
-                System.out.println("Please enter the number of players per team");
+                System.out.println("Please enter the number of teams");
                 teamLimitInput = scanner.nextInt();
 
                 System.out.println("Please enter the dimension size of the map");
@@ -158,6 +158,13 @@ public class Game
         totalPlayers = amountOfPlayersInput;
         inputMapChoice(mapSizeInput, mapChoice);
         createTeams(amountOfPlayersInput, teamLimitInput);
+        for (int i = 0; i < teams.size(); i++) {
+            System.out.print("Team "+i+":");
+            for (int j = 0; j < teams.get(i).players.length; j++) {
+                System.out.print(" "+teams.get(i).players[j].playerID+" ");
+            }
+            System.out.println();
+        }
     }
 
     /**
