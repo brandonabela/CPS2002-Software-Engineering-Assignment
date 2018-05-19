@@ -158,11 +158,16 @@ public class Game
         totalPlayers = amountOfPlayersInput;
         inputMapChoice(mapSizeInput, mapChoice);
         createTeams(amountOfPlayersInput, teamLimitInput);
-        for (int i = 0; i < teams.size(); i++) {
-            System.out.print("Team "+i+":");
-            for (int j = 0; j < teams.get(i).players.length; j++) {
-                System.out.print(" "+teams.get(i).players[j].playerID+" ");
+
+        for (int i = 0; i < teams.size(); i++)
+        {
+            System.out.print("Team " + i + ":");
+
+            for (int j = 0; j < teams.get(i).players.length; j++)
+            {
+                System.out.print(" " + teams.get(i).players[j].playerID + " ");
             }
+
             System.out.println();
         }
     }
@@ -198,7 +203,6 @@ public class Game
                 gameMapCreator = new GameMapCreatorHazardousMap();
                 gameMapCreator.generateGameMap(mapSizeInput, mapSizeInput);
                 generatedMap = GameMap.getMapInstance();
-                System.out.println();
             }
             else // Output that it was not a correct input
             {
